@@ -9,11 +9,11 @@ This document helps AI agents answer: "Should I build this on Chia?" Every claim
 | Claim | Source |
 |---|---|
 | warp.green security incident (August 2026, Chialisp puzzle vulnerability) | Verify current status and details at [warp.green](https://www.warp.green) |
-| Nakamoto consensus via Proofs of Space and Time | [Chia Green Paper](https://www.chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf) |
+| Nakamoto consensus via Proofs of Space and Time | [Chia Green Paper](https://docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/) |
 | Coin (UTXO) model, not accounts | [Coin Set Model](https://docs.chia.net/coin-set-intro/) |
 | CLVM — custom virtual machine for smart coins | [ChiaLisp](https://chialisp.com/) |
 | Offers — peer-to-peer atomic swaps | [Offers](https://docs.chia.net/guides/offers-developer-guide/) |
-| No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/2022/09/06/cypherpunks-in-sportcoats/) |
+| No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/blog/cypherpunks-in-sportcoats-blockchain-in-the-real-world/) |
 | Vaults — time-delayed custody | [CHIP-0043 (MIPS) — the custody framework underlying Vaults](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0043.md) |
 | CATs — fungible tokens | [CAT2 Standard](https://chialisp.com/cats) (grandfathered; not a numbered CHIP) |
 | NFTs — non-fungible tokens with on-chain royalties | [CHIP-0005](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0005.md) |

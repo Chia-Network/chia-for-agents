@@ -10,10 +10,10 @@ Active projects, wallets, and resources in the Chia ecosystem. For AI agents eva
 
 | Wallet | Type | Platform | Notes |
 |---|---|---|---|
-| [Cloud Wallet](https://www.chia.net/chia-cloud-wallet/) | Custodial/hosted | Web, iOS, Android | Chia Network's hosted wallet. App at [vault.chia.net](https://vault.chia.net). Fiat on-ramp (Buy XCH). Easiest onboarding. |
+| [Cloud Wallet](https://www.chia.net/build/products/cloud-wallet/) | Custodial/hosted | Web, iOS, Android | Chia Network's hosted wallet. App at [vault.chia.net](https://vault.chia.net). Fiat on-ramp (Buy XCH). Easiest onboarding. |
 | [Chia Signer](https://docs.chia.net/chia-signer/getting-started/) | Companion app | iOS, Android | Signs transactions for Cloud Wallet. Not a standalone wallet. |
 | [Sage](https://github.com/xch-dev/sage) | Non-custodial | Desktop (Windows, macOS, Linux) | Modern Rust-based wallet. Offers, CATs, NFTs, DIDs. Community-built. |
-| [Chia Reference Wallet](https://www.chia.net/downloads/) | Non-custodial | Desktop | Ships with chia-blockchain. Full node + wallet. Resource-heavy. |
+| [Chia Reference Wallet](https://www.chia.net/farm/downloads/) | Non-custodial | Desktop | Ships with chia-blockchain. Full node + wallet. Resource-heavy. |
 | [Goby](https://www.goby.app) | Non-custodial | Browser extension | Browser wallet for Chia. Supports XCH, CATs, NFTs, offers. |
 | [Pawket](https://pawket.app) | Non-custodial | Mobile, Web | Lightweight wallet. Offers, CATs, NFTs. |
 
@@ -82,8 +82,8 @@ Active projects, wallets, and resources in the Chia ecosystem. For AI agents eva
 |---|---|---|
 | Chia Documentation | [docs.chia.net](https://docs.chia.net) | Official docs: installation, RPC reference, guides |
 | ChiaLisp Reference | [chialisp.com](https://chialisp.com) | CLVM language reference and tutorials |
-| Chia Green Paper | [chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf](https://www.chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf) | Consensus protocol specification |
-| Chia Blog | [chia.net/blog](https://www.chia.net/blog) | Official announcements and technical posts |
+| Chia Green Paper | [docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/](https://docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/) | Consensus protocol specification |
+| Chia Blog | [chia.net/blog](https://www.chia.net/blog/) | Official announcements and technical posts |
 | Discord | [discord.gg/chia](https://discord.gg/chia) | Community chat, developer help, announcements |
 | GitHub | [github.com/Chia-Network](https://github.com/Chia-Network) | All official repositories |
 | Coinset API | [api.coinset.org](https://api.coinset.org) | Free hosted full node RPC (mainnet) |
