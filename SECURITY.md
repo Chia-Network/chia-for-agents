@@ -171,7 +171,7 @@ While `network_verified` is `"pending"`, address-conversion tools (`address_enco
 
 ### Package Integrity (npm Supply Chain)
 
-When installing via `npx`, pin the version to avoid running a compromised future publish: `npx -y chia-mcp@1.0.0` instead of `npx -y chia-mcp`. The package will be published with `--provenance` for npm attestation — once available, verify the attestation badge on the npmjs.com package page before trusting a new version. Treat the package name as a trusted configuration value, equivalent to `CHIA_FULL_NODE_URL`.
+When installing via `npx`, pin the version to avoid running a compromised future publish: `npx -y chia-mcp@1.0.1` instead of `npx -y chia-mcp`. The package will be published with `--provenance` for npm attestation — once available, verify the attestation badge on the npmjs.com package page before trusting a new version. Treat the package name as a trusted configuration value, equivalent to `CHIA_FULL_NODE_URL`.
 
 ### Time-of-Check/Time-of-Use on Offers
 
