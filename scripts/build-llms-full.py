@@ -37,7 +37,6 @@ SOURCES = [
     "resources/rpc-quickstart.md",
     "SECURITY.md",
     "chia-blockchain-AGENTS.md",
-    "chia-blockchain-AGENTS-new.md",
     "chia-mcp/README.md",
     "examples/query-blockchain-state.md",
     "examples/lookup-coin.md",

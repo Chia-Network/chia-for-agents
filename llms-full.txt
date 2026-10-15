@@ -1957,7 +1957,7 @@ chia dev sim farm              # Farm a block
 *Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
 
 
-# --- chia-blockchain-AGENTS-new.md ---
+# --- chia-blockchain-AGENTS.md ---
 
 # Chia Context
 
