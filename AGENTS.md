@@ -101,4 +101,4 @@ All files are Markdown documentation or JSON. No dependencies, no build steps.
 **Security:** See [SECURITY.md](SECURITY.md) — all docs cover read-only blockchain interaction. Agents must never move funds without explicit user confirmation.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*

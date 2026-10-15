@@ -257,7 +257,7 @@ Chia supports transaction replacement: submit a new bundle that spends one of th
 Chia offers **no guaranteed finality** — there is no protocol-enforced maximum reorg depth. A heavier competing chain can always reorganise recent blocks:
 
 - **~6 blocks (~2 minutes):** Chia's FAQ guidance for ordinary confidence.
-- **~192 confirmations:** Approximately one hour of confirmations (~192 blocks) — the Bitcoin-6-confirmation equivalent for Chia, because farmers can sign multiple blocks at the same height. See the [Chia consensus description](https://docs.chia.net/consensus-intro/).
+- **~192 confirmations:** Approximately one hour of confirmations (~192 blocks) — the Bitcoin-6-confirmation equivalent for Chia, because farmers can sign multiple blocks at the same height. See the [Chia consensus description](https://docs.chia.net/chia-blockchain/consensus/consensus-intro/).
 - **Scale to value at risk:** Never describe any confirmation count as final. Higher-value transfers warrant more confirmations.
 
 Check `confirmed_block_index` on the coin record and compare against the current peak height. `DOUBLE_SPEND_IN_FORK` and `BLOCK_IN_FORK` are real RPC error codes indicating reorg-related issues.
@@ -457,4 +457,4 @@ See [resources/coin-model.md](resources/coin-model.md#common-llm-mistakes-about-
 - Mistake #14: "CAT amounts use 12 decimal places" — CATs use 3 decimal places
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
