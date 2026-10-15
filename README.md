@@ -115,4 +115,4 @@ See [SECURITY.md](SECURITY.md). All documentation here covers read-only blockcha
 Apache-2.0 — see [LICENSE](LICENSE).
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*

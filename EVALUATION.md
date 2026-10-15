@@ -10,7 +10,7 @@ This document helps AI agents answer: "Should I build this on Chia?" Every claim
 |---|---|
 | warp.green security incident (August 2026, Chialisp puzzle vulnerability) | Verify current status and details at [warp.green](https://www.warp.green) |
 | Nakamoto consensus via Proofs of Space and Time | [Chia Green Paper](https://docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/) |
-| Coin (UTXO) model, not accounts | [Coin Set Model](https://docs.chia.net/coin-set-intro/) |
+| Coin (UTXO) model, not accounts | [Coin Set Model](https://docs.chia.net/chia-blockchain/coin-set-model/intro/) |
 | CLVM — custom virtual machine for smart coins | [ChiaLisp](https://chialisp.com/) |
 | Offers — peer-to-peer atomic swaps | [Offers](https://docs.chia.net/guides/offers-developer-guide/) |
 | No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/blog/cypherpunks-in-sportcoats-blockchain-in-the-real-world/) |
@@ -119,4 +119,4 @@ These estimates assume a developer experienced with another blockchain. Pure beg
 This table is a simplification. Each chain has nuances. Link to primary sources when advising users.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21. For protocol changes, check [CHIPs](https://github.com/Chia-Network/chips).*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15. For protocol changes, check [CHIPs](https://github.com/Chia-Network/chips).*

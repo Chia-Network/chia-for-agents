@@ -209,7 +209,7 @@ Recursively look up `parent_coin_info` — see [examples/trace-coin-lineage.md](
 - Amounts are in **mojos** (1 XCH = 10¹² mojos)
 - **chia-mcp returns the following fields as strings** (not numbers) for JSON precision safety: `amount`, `timestamp`, `fee`, `cost`, `space`, `weight`, `total_iters`, `sub_slot_iters`, `required_iters`, `mempool_cost`, `mempool_max_total_cost`, `mempool_min_fee_per_cost`. Use BigInt or Python integers for arithmetic — never JavaScript Number or jq.
 - Coinset hosted endpoints have rate limits — be respectful
-- For full RPC documentation: [docs.chia.net Full Node RPC](https://docs.chia.net/full-node-rpc)
+- For full RPC documentation: [docs.chia.net Full Node RPC](https://docs.chia.net/reference-client/rpc-reference/full-node-rpc/)
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
