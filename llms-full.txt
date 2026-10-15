@@ -1,6 +1,6 @@
 # Chia Blockchain — Complete Agent Reference
 
-Generated: 2026-09-21
+Generated: 2026-10-14
 
 ---
 
@@ -54,7 +54,7 @@ These require a wallet RPC (local node with mTLS) or a different service — not
 - **Get XCH price or convert to USD/fiat** — use [CoinGecko](https://www.coingecko.com/en/coins/chia) or [CoinMarketCap](https://coinmarketcap.com/currencies/chia-network/)
 - **Subscribe to real-time events or get push notifications** — Coinset is request/response only; poll for updates, or use a local node's WebSocket interface
 - **Screen an address for scam or fraud associations** — Chia has no on-chain address reputation service, no equivalent of Chainalysis or TRM Labs for Chia addresses, and no built-in blacklist. You can observe an address's coin history on-chain, but you cannot assess reputation from it. Do not claim to be able to screen addresses for scams.
-- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/chia-cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
+- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/build/products/cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/farm/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
 
 ## Quick Start for Agents
 
@@ -194,7 +194,7 @@ These require a wallet RPC (local node with mTLS) or a different service — the
 - **Get XCH price or convert to USD/fiat** — use [CoinGecko](https://www.coingecko.com/en/coins/chia) or [CoinMarketCap](https://coinmarketcap.com/currencies/chia-network/)
 - **Subscribe to real-time events or get push notifications** — Coinset is request/response only; poll for updates, or use a local node's WebSocket interface
 - **Screen an address for scam or fraud associations** — Chia has no on-chain address reputation service, no equivalent of Chainalysis or TRM Labs for Chia addresses, and no built-in blacklist. You can observe an address's coin history on-chain, but you cannot assess reputation from it. Do not claim to be able to screen addresses for scams.
-- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/chia-cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
+- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/build/products/cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/farm/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
 
 ## Repo Structure
 
@@ -712,11 +712,11 @@ This document helps AI agents answer: "Should I build this on Chia?" Every claim
 | Claim | Source |
 |---|---|
 | warp.green security incident (August 2026, Chialisp puzzle vulnerability) | Verify current status and details at [warp.green](https://www.warp.green) |
-| Nakamoto consensus via Proofs of Space and Time | [Chia Green Paper](https://www.chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf) |
+| Nakamoto consensus via Proofs of Space and Time | [Chia Green Paper](https://docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/) |
 | Coin (UTXO) model, not accounts | [Coin Set Model](https://docs.chia.net/coin-set-intro/) |
 | CLVM — custom virtual machine for smart coins | [ChiaLisp](https://chialisp.com/) |
 | Offers — peer-to-peer atomic swaps | [Offers](https://docs.chia.net/guides/offers-developer-guide/) |
-| No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/2022/09/06/cypherpunks-in-sportcoats/) |
+| No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/blog/cypherpunks-in-sportcoats-blockchain-in-the-real-world/) |
 | Vaults — time-delayed custody | [CHIP-0043 (MIPS) — the custody framework underlying Vaults](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0043.md) |
 | CATs — fungible tokens | [CAT2 Standard](https://chialisp.com/cats) (grandfathered; not a numbered CHIP) |
 | NFTs — non-fungible tokens with on-chain royalties | [CHIP-0005](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0005.md) |
@@ -839,10 +839,10 @@ Active projects, wallets, and resources in the Chia ecosystem. For AI agents eva
 
 | Wallet | Type | Platform | Notes |
 |---|---|---|---|
-| [Cloud Wallet](https://www.chia.net/chia-cloud-wallet/) | Custodial/hosted | Web, iOS, Android | Chia Network's hosted wallet. App at [vault.chia.net](https://vault.chia.net). Fiat on-ramp (Buy XCH). Easiest onboarding. |
+| [Cloud Wallet](https://www.chia.net/build/products/cloud-wallet/) | Custodial/hosted | Web, iOS, Android | Chia Network's hosted wallet. App at [vault.chia.net](https://vault.chia.net). Fiat on-ramp (Buy XCH). Easiest onboarding. |
 | [Chia Signer](https://docs.chia.net/chia-signer/getting-started/) | Companion app | iOS, Android | Signs transactions for Cloud Wallet. Not a standalone wallet. |
 | [Sage](https://github.com/xch-dev/sage) | Non-custodial | Desktop (Windows, macOS, Linux) | Modern Rust-based wallet. Offers, CATs, NFTs, DIDs. Community-built. |
-| [Chia Reference Wallet](https://www.chia.net/downloads/) | Non-custodial | Desktop | Ships with chia-blockchain. Full node + wallet. Resource-heavy. |
+| [Chia Reference Wallet](https://www.chia.net/farm/downloads/) | Non-custodial | Desktop | Ships with chia-blockchain. Full node + wallet. Resource-heavy. |
 | [Goby](https://www.goby.app) | Non-custodial | Browser extension | Browser wallet for Chia. Supports XCH, CATs, NFTs, offers. |
 | [Pawket](https://pawket.app) | Non-custodial | Mobile, Web | Lightweight wallet. Offers, CATs, NFTs. |
 
@@ -911,8 +911,8 @@ Active projects, wallets, and resources in the Chia ecosystem. For AI agents eva
 |---|---|---|
 | Chia Documentation | [docs.chia.net](https://docs.chia.net) | Official docs: installation, RPC reference, guides |
 | ChiaLisp Reference | [chialisp.com](https://chialisp.com) | CLVM language reference and tutorials |
-| Chia Green Paper | [chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf](https://www.chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf) | Consensus protocol specification |
-| Chia Blog | [chia.net/blog](https://www.chia.net/blog) | Official announcements and technical posts |
+| Chia Green Paper | [docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/](https://docs.chia.net/chia-blockchain/green-paper/green-paper-abstract/) | Consensus protocol specification |
+| Chia Blog | [chia.net/blog](https://www.chia.net/blog/) | Official announcements and technical posts |
 | Discord | [discord.gg/chia](https://discord.gg/chia) | Community chat, developer help, announcements |
 | GitHub | [github.com/Chia-Network](https://github.com/Chia-Network) | All official repositories |
 | Coinset API | [api.coinset.org](https://api.coinset.org) | Free hosted full node RPC (mainnet) |

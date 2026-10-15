@@ -63,7 +63,7 @@ These require a wallet RPC (local node with mTLS) or a different service — the
 - **Get XCH price or convert to USD/fiat** — use [CoinGecko](https://www.coingecko.com/en/coins/chia) or [CoinMarketCap](https://coinmarketcap.com/currencies/chia-network/)
 - **Subscribe to real-time events or get push notifications** — Coinset is request/response only; poll for updates, or use a local node's WebSocket interface
 - **Screen an address for scam or fraud associations** — Chia has no on-chain address reputation service, no equivalent of Chainalysis or TRM Labs for Chia addresses, and no built-in blacklist. You can observe an address's coin history on-chain, but you cannot assess reputation from it. Do not claim to be able to screen addresses for scams.
-- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/chia-cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
+- **Set up or manage a wallet** — To get started with a Chia wallet, use [Chia Cloud Wallet](https://www.chia.net/build/products/cloud-wallet/) (browser-based, no install) or [Sage](https://github.com/xch-dev/sage) (community-built desktop wallet). The [Chia Reference Wallet](https://www.chia.net/farm/downloads/) is the full-featured desktop option. Wallet setup, key generation, and address management are outside the scope of full node RPCs.
 
 ## Repo Structure
 
