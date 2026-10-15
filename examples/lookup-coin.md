@@ -114,4 +114,4 @@ Call the `get_coin_record_by_name` tool with:
 - A spent coin's value has moved to its child coins — look them up via `get_coin_records_by_parent_ids`
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
