@@ -96,4 +96,4 @@ XCH trades on several exchanges. Availability varies by region. Check [CoinGecko
 ---
 *Ecosystem information is best-effort and may not reflect the most current state. Verify project status via their official links.*
 
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*

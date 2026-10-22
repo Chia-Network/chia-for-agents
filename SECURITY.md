@@ -114,7 +114,7 @@ Chia offers **no guaranteed finality** — there is no protocol-enforced maximum
 
 **Rules:**
 - Never tell a user that a transaction is "final" or "irreversible" based on a confirmation count alone.
-- For ordinary confidence, Chia's FAQ guidance is ~6 blocks (~2 minutes). For high-value transfers, approximately one hour of confirmations (~192 blocks) is the Bitcoin-6-equivalent (see [consensus description](https://docs.chia.net/consensus-intro/)).
+- For ordinary confidence, Chia's FAQ guidance is ~6 blocks (~2 minutes). For high-value transfers, approximately one hour of confirmations (~192 blocks) is the Bitcoin-6-equivalent (see [consensus description](https://docs.chia.net/chia-blockchain/consensus/consensus-intro/)).
 - When a coin record's `spent_block_index` is very recent (within the last handful of blocks), flag it as potentially reversible.
 - If an agent receives `DOUBLE_SPEND_IN_FORK` or `BLOCK_IN_FORK`, re-query chain state before taking further action.
 
@@ -171,7 +171,7 @@ While `network_verified` is `"pending"`, address-conversion tools (`address_enco
 
 ### Package Integrity (npm Supply Chain)
 
-When installing via `npx`, pin the version to avoid running a compromised future publish: `npx -y chia-mcp@1.0.0` instead of `npx -y chia-mcp`. The package will be published with `--provenance` for npm attestation — once available, verify the attestation badge on the npmjs.com package page before trusting a new version. Treat the package name as a trusted configuration value, equivalent to `CHIA_FULL_NODE_URL`.
+When installing via `npx`, pin the version to avoid running a compromised future publish: `npx -y chia-mcp@1.0.1` instead of `npx -y chia-mcp`. The package will be published with `--provenance` for npm attestation — once available, verify the attestation badge on the npmjs.com package page before trusting a new version. Treat the package name as a trusted configuration value, equivalent to `CHIA_FULL_NODE_URL`.
 
 ### Time-of-Check/Time-of-Use on Offers
 
@@ -233,7 +233,7 @@ This is distinct from the `decode_offer` caveat: it applies *after* the offer is
 
 Security vulnerabilities in Chia Network software (chia-blockchain, clvm_rs, chia_rs, chia-wallet-sdk, chialisp) should be reported through **HackerOne**:
 
-> **https://hackerone.com/chia_network**
+> **<https://hackerone.com/chia_network>**
 
 Do not open public GitHub issues for security vulnerabilities. HackerOne provides a private, coordinated disclosure channel. Chia Network reviews all submissions and publishes post-mortems once fix adoption is broad enough that disclosure is safe.
 
@@ -266,4 +266,4 @@ These docs and chia-mcp are designed for **read-only chain analysis**. The follo
 **Rule:** If an agent identifies a vulnerability or at-risk funds, it should **report to the user and recommend contacting Chia Network via HackerOne** — not attempt an autonomous rescue. White-hat rescues require human judgment, coordination, and authorization.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*

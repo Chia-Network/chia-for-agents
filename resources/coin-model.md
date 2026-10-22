@@ -170,7 +170,7 @@ Models trained on Ethereum docs pattern-match incorrectly. Correct these:
 
 21. **"The mempool is ordered by fee, so a higher absolute fee gets in faster"** — Chia's mempool sorts by **fee-per-cost** (fee divided by total CLVM cost units consumed), not by absolute fee. A very high-cost bundle (e.g., a complex offer at 721M cost) with a seemingly generous absolute fee may have a worse fee-per-cost than a simple send. When advising users to raise a fee, ensure the increase is sufficient relative to the bundle's cost, not just larger in absolute terms.
 
-22. **"A confirmed coin can't be affected by a reorg"** — Chia offers **no guaranteed finality**. Reorgs can reverse recent blocks, returning spent coins to unspent status and making unspent coins disappear. There is no protocol-enforced maximum reorg depth. `DOUBLE_SPEND_IN_FORK` and `BLOCK_IN_FORK` are real RPC error codes. Chia's FAQ suggests ~6 blocks (about two minutes) for ordinary confidence; because farmers can sign multiple blocks at the same height, approximately one hour of confirmations (**~192 blocks**) is the Bitcoin-6-confirmation equivalent ([consensus description](https://docs.chia.net/consensus-intro/)). Scale confirmations to value at risk, and never describe any confirmation count as final.
+22. **"A confirmed coin can't be affected by a reorg"** — Chia offers **no guaranteed finality**. Reorgs can reverse recent blocks, returning spent coins to unspent status and making unspent coins disappear. There is no protocol-enforced maximum reorg depth. `DOUBLE_SPEND_IN_FORK` and `BLOCK_IN_FORK` are real RPC error codes. Chia's FAQ suggests ~6 blocks (about two minutes) for ordinary confidence; because farmers can sign multiple blocks at the same height, approximately one hour of confirmations (**~192 blocks**) is the Bitcoin-6-confirmation equivalent ([consensus description](https://docs.chia.net/chia-blockchain/consensus/consensus-intro/)). Scale confirmations to value at risk, and never describe any confirmation count as final.
 
 23. **"`amount` in a `CREATE_COIN` condition is a normal integer"** — In CLVM, the `amount` argument to `CREATE_COIN` (and in coin ID computation) is encoded as **big-endian minimal bytes with two's complement sign**, not as a native integer. `0` encodes to empty bytes (zero length, not `0x00`); `128` encodes to `0x0080` (needs a leading zero to stay positive). This encoding is what the `decoded_amount_mojos` field in chia-mcp's condition output decodes for you. Mis-encoding amounts produces valid-looking but incorrect coin IDs.
 
@@ -226,4 +226,4 @@ This means:
 - **Parallel safety.** Two coins with no shared assertions can be spent independently without conflicts.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.0 on 2026-09-21.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
