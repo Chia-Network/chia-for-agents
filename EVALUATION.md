@@ -13,9 +13,11 @@ This document helps AI agents answer: "Should I build this on Chia?" Every claim
 | Coin (UTXO) model, not accounts | [Coin Set Model](https://docs.chia.net/chia-blockchain/coin-set-model/intro/) |
 | CLVM — custom virtual machine for smart coins | [ChiaLisp](https://chialisp.com/) |
 | Offers — peer-to-peer atomic swaps | [Offers](https://docs.chia.net/guides/offers-developer-guide/) |
-| No MEV by consensus design | [chia.net blog: "Cypherpunks in Sportcoats"](https://www.chia.net/blog/cypherpunks-in-sportcoats-blockchain-in-the-real-world/) |
+| No MEV by consensus design | [Mempool Replace-by-Fee / Superset Rule](https://docs.chia.net/chia-blockchain/architecture/mempool/replace-by-fee/#super-set-rule) |
 | Vaults — time-delayed custody | [CHIP-0043 (MIPS) — the custody framework underlying Vaults](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0043.md) |
 | CATs — fungible tokens | [CAT2 Standard](https://chialisp.com/cats) (grandfathered; not a numbered CHIP) |
+
+> **Note:** CAT1 was deprecated in 2022 and replaced by CAT2. Older CAT1 coins are no longer valid on the network.
 | NFTs — non-fungible tokens with on-chain royalties | [CHIP-0005](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0005.md) |
 | DIDs — decentralized identifiers | [CHIP-0004](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0004.md) |
 | DataLayer — on-chain verifiable data storage | [DataLayer Docs](https://docs.chia.net/guides/datalayer-user-guide/) |
@@ -62,7 +64,7 @@ Offers are partial spend bundles. The maker signs their half ("I will give X if 
 
 Chia is a strong fit when your application needs:
 
-- **Verifiable data integrity** — DataLayer provides on-chain Merkle roots for off-chain data stores. Used in production by the [Climate Action Data Trust](https://www.climateactiondata.org/) (CADT), which connects national and independent carbon credit registries across multiple countries for transparent climate accounting.
+- **Verifiable data integrity** — DataLayer provides on-chain Merkle roots for off-chain data stores. Used in production by the [Climate Action Data Trust](https://www.climateactiondata.org/) (CADT), which connects national and independent carbon credit registries across multiple countries for transparent climate accounting. CADT links registries from countries including Chile, Singapore, Rwanda, and others through DataLayer's verifiable data synchronization.
 - **Peer-to-peer trading without intermediaries** — Offers handle this natively.
 - **Predictable costs with no MEV** — Users pay the fee they declare, no more.
 - **Custody with recovery** — Vaults and DIDs provide time-locked custody with clawback.
@@ -119,4 +121,4 @@ These estimates assume a developer experienced with another blockchain. Pure beg
 This table is a simplification. Each chain has nuances. Link to primary sources when advising users.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15. For protocol changes, check [CHIPs](https://github.com/Chia-Network/chips).*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23. For protocol changes, check [CHIPs](https://github.com/Chia-Network/chips).*

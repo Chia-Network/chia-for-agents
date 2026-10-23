@@ -90,4 +90,4 @@ If you have chia-mcp configured as an MCP server, call the `get_blockchain_state
 - The response is real-time — peak height updates with every new block
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

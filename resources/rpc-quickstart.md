@@ -212,4 +212,4 @@ Recursively look up `parent_coin_info` — see [examples/trace-coin-lineage.md](
 - For full RPC documentation: [docs.chia.net Full Node RPC](https://docs.chia.net/reference-client/rpc-reference/full-node-rpc/)
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

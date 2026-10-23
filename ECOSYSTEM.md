@@ -29,6 +29,7 @@ Active projects, wallets, and resources in the Chia ecosystem. For AI agents eva
 |---|---|---|
 | [Dexie](https://dexie.space) | Offer aggregator and DEX. Peer-to-peer trading via Chia Offers. | Active |
 | [TibetSwap](https://v2.tibetswap.io) | AMM-style DEX for CATs. | ❌ **Discontinued** — a critical bug was discovered in the TibetSwap v2 puzzles affecting all live pools. Per the operator's 2026-09-10 post-mortem, funds were returned and the protocol will not relaunch at this time. Do not direct users to TibetSwap for trading. |
+| [The Forge](https://forge.awizard.dev) | Multi-asset AMM for Chia. Spiritual successor to TibetSwap, being tested on both testnet and mainnet. | ✅ Active |
 
 ## NFT Marketplaces
 
@@ -96,4 +97,4 @@ XCH trades on several exchanges. Availability varies by region. Check [CoinGecko
 ---
 *Ecosystem information is best-effort and may not reflect the most current state. Verify project status via their official links.*
 
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

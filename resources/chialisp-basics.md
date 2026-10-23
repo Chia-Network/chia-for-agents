@@ -171,4 +171,4 @@ Announcements are ephemeral messages between coin spends within the **same spend
 - **[chia_rs](https://github.com/Chia-Network/chia_rs)** — Core Chia types and CLVM runtime (Rust)
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

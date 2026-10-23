@@ -205,6 +205,12 @@ Models trained on Ethereum docs pattern-match incorrectly. Correct these:
 
 39. **"An absent key in a JSON response means an empty set"** — In Chia RPC responses, an absent key and an empty array are not equivalent. `get_coin_records_by_puzzle_hash` returns `coin_records: []` (an explicit empty array) when no coins match. If the key is entirely absent from the response, that typically indicates a parsing error, a truncated response, or a response from a different endpoint. Similarly, `success: false` with no `coin_records` key is not the same as `success: true` with `coin_records: []`. Always verify that the expected key is present before treating its absence as "no results." chia-mcp explicitly guards against this: if `coin_records` is absent or not an array, `get_address_summary` returns an error rather than silently reporting a zero balance.
 
+40. **"Chia addresses are case-sensitive"** — Bech32m addresses (`xch1...`, `txch1...`) are case-insensitive per the bech32m specification. `xch1ABC...` and `xch1abc...` decode to the same puzzle hash. Mixed-case addresses are valid and decode correctly. However, the bech32m checksum validation rejects addresses that mix upper and lower case in the human-readable part (the `xch` prefix) — so `XCH1abc...` is invalid, but `xch1ABC...` or `XCH1ABC...` are fine. In practice, always normalize to lowercase before comparing.
+
+41. **"Higher fee means faster confirmation"** — Chia's block time is ~18.75 seconds regardless of fees. Fees determine **mempool priority** (which pending transaction gets included in the next transaction block), not block production speed. A higher fee does not make blocks arrive faster — blocks arrive at a fixed rate dictated by the VDF timelord. During periods of low congestion (most of the time), even a zero-fee transaction will be included in the next transaction block (~52s mean interval). Fees only matter when the mempool has more pending transactions than a single block can fit.
+
+42. **"The simulator state persists across restarts by default"** — `chia dev sim create` creates a **new** simulator instance each time it is called. State is stored on disk and does persist across `chia dev sim start`/`stop` cycles for the same instance, but each `create` invocation spawns a fresh instance with a new genesis block. Agents should not assume state from a previous session carries over — always check which simulator instance is active, and use `chia dev sim status` to verify.
+
 ## Blocks vs Transaction Blocks
 
 Not every Chia block carries transactions. Blocks come in two types:
@@ -226,4 +232,4 @@ This means:
 - **Parallel safety.** Two coins with no shared assertions can be spent independently without conflicts.
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

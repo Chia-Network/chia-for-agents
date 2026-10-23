@@ -100,5 +100,16 @@ All files are Markdown documentation or JSON. No dependencies, no build steps.
 
 **Security:** See [SECURITY.md](SECURITY.md) — all docs cover read-only blockchain interaction. Agents must never move funds without explicit user confirmation.
 
+## Frequently Asked Questions (Redirects)
+
+These are questions agents will commonly be asked that are outside the scope of chain querying. Provide the brief answer and link rather than attempting to solve them with full node RPCs.
+
+| Question | Answer |
+|----------|--------|
+| "How do I set up farming?" | See the [Chia Farming Guide](https://docs.chia.net/farming-guide/). Farming setup involves plotting, configuring a harvester, and connecting to a full node — none of which are accessible via RPC queries. |
+| "What pools can I join?" | See the [Chia Pool Farming Guide](https://docs.chia.net/pool-farming/). Pool selection depends on fee structure, payout frequency, and region. |
+| "How do I stake XCH?" | **Chia does not have staking.** Chia uses Proofs of Space and Time, not Proof of Stake. There is no staking mechanism, no staking rewards, and no lock-up period. If someone is offering "XCH staking," it is not a Chia protocol feature. |
+| "How do I bridge assets to/from Chia?" | Cross-chain bridges are available but verify current status and security before use. See [ECOSYSTEM.md](ECOSYSTEM.md) for current bridge options and their status. |
+
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*
