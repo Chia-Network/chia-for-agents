@@ -387,7 +387,7 @@ Both are MCP servers for Chia, but they serve different roles:
 | **Puzzle/solution inspection** | ✅ | ✅ (with decoded conditions) |
 | **Composite tools** | ✅ `get_address_summary`, `trace_coin_lineage`, `summarize_block`, `decode_offer` | ❌ |
 | **Error handling** | Structured error codes, network envelope on every response | Varies |
-| **LLM-optimized docs** | ✅ 42 common mistakes, embedded guides, truncation hints | Basic |
+| **LLM-optimized docs** | ✅ 45 common mistakes, embedded guides, truncation hints | Basic |
 | **Authentication** | None required (Coinset hosted) or mTLS (local node) | None required |
 | **push_tx** | ✅ (opt-in via env var) | ✅ |
 
@@ -1073,6 +1073,12 @@ Models trained on Ethereum docs pattern-match incorrectly. Correct these:
 41. **"Higher fee means faster confirmation"** — Chia's block time is ~18.75 seconds regardless of fees. Fees determine **mempool priority** (which pending transaction gets included in the next transaction block), not block production speed. A higher fee does not make blocks arrive faster — blocks arrive at a fixed rate dictated by the VDF timelord. During periods of low congestion (most of the time), even a zero-fee transaction will be included in the next transaction block (~52s mean interval). Fees only matter when the mempool has more pending transactions than a single block can fit.
 
 42. **"The simulator state persists across restarts by default"** — `chia dev sim create` creates a **new** simulator instance each time it is called. State is stored on disk and does persist across `chia dev sim start`/`stop` cycles for the same instance, but each `create` invocation spawns a fresh instance with a new genesis block. Agents should not assume state from a previous session carries over — always check which simulator instance is active, and use `chia dev sim status` to verify.
+
+43. **"Coin records have a `type` field that tells you if it's a CAT/NFT"** — There is no `type` field on coin records. The full node RPC returns the same structure for every coin regardless of whether it's plain XCH, a CAT, an NFT, or a singleton. To determine what kind of coin it is, you must inspect the puzzle — specifically, check whether the outer puzzle hash matches known patterns (CAT v2 outer puzzle, singleton top layer, NFT state layer). The `puzzle_mod_hashes` in `constants.json` lists the standard outer puzzle hashes for programmatic detection. There is no shortcut: if you haven't parsed the puzzle, you don't know the coin type.
+
+44. **"You can subscribe to mempool changes via WebSocket on Coinset"** — Coinset's hosted endpoints are request/response only (HTTP POST). There is no WebSocket, Server-Sent Events, or push notification interface for mempool updates. To monitor the mempool, you must poll `get_all_mempool_tx_ids` or `get_mempool_items_by_coin_name` periodically. A local `chia-blockchain` node does support WebSocket connections via its daemon interface, but that requires running your own node — Coinset does not expose it.
+
+45. **"Chia uses Proof of Stake / I can stake XCH"** — Chia uses Proofs of Space and Time (PoST), not Proof of Stake. There is no staking mechanism. You cannot lock XCH to earn yield or participate in consensus. Participation in consensus requires allocating disk space to store plot files (farming), not locking tokens. If a user asks "how do I stake XCH," the correct answer is that Chia does not have staking — the equivalent concept is farming, which requires disk space rather than capital.
 
 ## Blocks vs Transaction Blocks
 
