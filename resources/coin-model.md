@@ -1,5 +1,9 @@
 # The Chia Coinset Model
 
+<!-- ⚠️ This content is also embedded in chia-mcp as the MCP resource chia://guide/coin-model
+     (src/resources.ts in https://github.com/Chia-Network/chia-mcp).
+     If you edit this file, update the embedded copy too — npm run check:drift catches divergence. -->
+
 Chia uses a **coin-based** (UTXO-like) model, not an account-based model like Ethereum. Understanding this is essential for working with Chia.
 
 ## Coins vs Accounts

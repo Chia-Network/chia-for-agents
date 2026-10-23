@@ -14,6 +14,10 @@ Choose based on your task:
 | **Calling RPCs directly** | [resources/rpc-quickstart.md](resources/rpc-quickstart.md) — endpoints + curl examples |
 | **Understanding ChiaLisp/CLVM** | [resources/chialisp-basics.md](resources/chialisp-basics.md) — puzzle programming basics |
 
+<!-- ⚠️ The recipe table below is also embedded in chia-mcp as chia://guide/recipes
+     (src/resources.ts in https://github.com/Chia-Network/chia-mcp).
+     If you edit recipes, update the embedded copy too — npm run check:drift catches divergence. -->
+
 ## Common Task Recipes
 
 A coin ID is a 0x-prefixed 64-character hex string (32 bytes), e.g., `0xabcd...1234`. It is NOT the same as a transaction ID (Chia has no transaction IDs — transactions are spend bundles containing one or more coin spends). It is also not an address (addresses are bech32m-encoded puzzle hashes starting with xch1 or txch1).

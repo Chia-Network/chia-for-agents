@@ -1,5 +1,9 @@
 # Chia RPC Quickstart
 
+<!-- ⚠️ This content is also embedded in chia-mcp as the MCP resource chia://guide/rpc-quickstart
+     (src/resources.ts in https://github.com/Chia-Network/chia-mcp).
+     If you edit this file, update the embedded copy too — npm run check:drift catches divergence. -->
+
 Quick reference for the most common Chia full node RPCs.
 
 ## Endpoints
