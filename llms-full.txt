@@ -408,7 +408,7 @@ Both are MCP servers for Chia, but they serve different roles:
 | [chia-blockchain](https://github.com/Chia-Network/chia-blockchain) | Python | Reference implementation, full node, wallet, simulator |
 | [chia_rs](https://github.com/Chia-Network/chia_rs) | Rust | Core types, CLVM, BLS, performance-critical code |
 | [chialisp](https://github.com/Chia-Network/chialisp) (formerly clvm_tools_rs) | Rust | CLVM compiler and debugging tools |
-| [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) | Rust | Wallet operations, offer parsing, coin inspection |
+| [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) | Rust | Wallet operations, offer parsing, coin inspection. Production-ready — powers [Sage](https://github.com/xch-dev/sage), a production wallet with active users. |
 | [Rue](https://github.com/xch-dev/rue) | Custom | High-level language compiling to CLVM |
 | [chia-mcp](https://github.com/Chia-Network/chia-mcp) | TypeScript | MCP server for agent blockchain access |
 | [Sage](https://github.com/xch-dev/sage) | Rust | Modern wallet implementation |
@@ -610,6 +610,10 @@ This document helps AI agents answer: "Should I build this on Chia?" Every claim
 | DIDs — decentralized identifiers | [CHIP-0004](https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0004.md) |
 | DataLayer — on-chain verifiable data storage | [DataLayer Docs](https://docs.chia.net/guides/datalayer-user-guide/) |
 | Climate Action Data Trust (CADT) | [climateactiondata.org](https://www.climateactiondata.org/) |
+| CADT registry coverage (>10 registries, >90% of voluntary credits) | [Quantedge Foundation](https://www.quantedge.org/climate-action-data-trust), [CADT Data Dashboard](https://data.climateactiondata.org/search/projects) |
+| Transaction cost estimates (CLVM cost units) | [constants.json](constants.json) `node_cost_estimates`, [chialisp.com/costs](https://chialisp.com/costs) |
+| Ethereum gas fees (2025–2026 ranges) | [ethereum.org/gas](https://ethereum.org/developers/docs/gas/), [gate.com](https://www.gate.com/blog/eth-gas-2025-fee-trends-layer-2-impact-and-cost-optimization), [coinpaprika.com](https://coinpaprika.com/education/ethereum-gas-fees-in-2026-how-to-cut-costs-with-layer-2-and-timing) |
+| chia-wallet-sdk production use (Sage wallet) | [github.com/xch-dev/sage](https://github.com/xch-dev/sage) |
 
 ## Consensus and Decentralization
 
@@ -652,7 +656,7 @@ Offers are partial spend bundles. The maker signs their half ("I will give X if 
 
 Chia is a strong fit when your application needs:
 
-- **Verifiable data integrity** — DataLayer provides on-chain Merkle roots for off-chain data stores. Used in production by the [Climate Action Data Trust](https://www.climateactiondata.org/) (CADT), which connects national and independent carbon credit registries across multiple countries for transparent climate accounting. CADT links registries from countries including Chile, Singapore, Rwanda, and others through DataLayer's verifiable data synchronization.
+- **Verifiable data integrity** — DataLayer provides on-chain Merkle roots for off-chain data stores. Used in production by the [Climate Action Data Trust](https://www.climateactiondata.org/) (CADT), which aggregates and harmonises carbon credit data from [more than ten registries](https://data.climateactiondata.org/search/projects) — including Verra, Gold Standard, the CDM Registry, American Carbon Registry, Global Carbon Council, and Cercarbono — covering over 90% of global voluntary carbon credit data. CADT's governance council includes representatives from six countries (Singapore, UK, Bhutan, Chile, Senegal, Japan) and four independent registries. Its open-source software and data model are recognised as a [digital public good](https://www.quantedge.org/climate-action-data-trust) by the Digital Public Goods Alliance. All data synchronization between registries uses DataLayer's peer-to-peer verifiable data infrastructure.
 - **Peer-to-peer trading without intermediaries** — Offers handle this natively.
 - **Predictable costs with no MEV** — Users pay the fee they declare, no more.
 - **Custody with recovery** — Vaults and DIDs provide time-locked custody with clawback.
@@ -681,17 +685,34 @@ Be honest about the limitations:
 
   Smart contracts anywhere can have bugs; CLVM puzzle bugs are rarer to catch because the tooling and auditor familiarity are thinner than for EVM. The TibetSwap incident is particularly instructive: AI-assisted review is not a substitute for rigorous assertion coverage in puzzle design. Budget more review time and testing for complex ChiaLisp puzzles, and always assert positivity on solution-supplied amounts.
 
+## Transaction Costs
+
+Chia transaction fees are denominated in mojos (1 XCH = 10¹² mojos). The fee for a spend bundle equals its CLVM cost multiplied by a fee-per-cost rate; the minimum rate to enter the mempool is 5 mojos per CLVM cost unit.
+
+| Transaction type | CLVM cost (approx.) | Minimum fee (mojos) | Minimum fee (XCH) |
+|---|---|---|---|
+| Standard XCH send | ~9.4M | ~47M mojos | ~0.000047 XCH |
+| CAT transfer | ~36M | ~182M mojos | ~0.000182 XCH |
+| Take offer | ~721M | ~3.6B mojos | ~0.0036 XCH |
+| NFT transfer | ~74M | ~370M mojos | ~0.00037 XCH |
+
+*Source: `node_cost_estimates` from chia-blockchain's `full_node_rpc_api.py`. These are the node's built-in cost estimates; actual costs vary by puzzle complexity. At typical XCH prices ($20–40), a standard send costs well under $0.01.*
+
+**Comparison with Ethereum (L1):** Ethereum gas fees are highly variable. A simple ETH transfer requires 21,000 gas units. As of mid-2026, average base fees on Ethereum L1 have dropped to ~0.5 gwei during low-congestion periods ([source](https://coinpaprika.com/education/ethereum-gas-fees-in-2026-how-to-cut-costs-with-layer-2-and-timing)), making a simple transfer ~$0.04 — but during congestion spikes (2025 averages ranged from 8–20 gwei), simple transfers cost $0.40–$1.20 and complex DeFi transactions $3–$15+ ([source](https://www.gate.com/blog/eth-gas-2025-fee-trends-layer-2-impact-and-cost-optimization)). Ethereum L2s (Arbitrum, Base, Optimism) reduce costs to cents but add bridge complexity. Chia fees are more predictable: the mempool uses a fixed fee-per-cost rate rather than a dynamic auction, so costs don't spike with network activity the same way (though during sustained high demand, higher fee rates can outbid lower ones).
+
 ## Getting Started — Time Estimates
 
 | Goal | Time | What's involved |
 |------|------|-----------------|
 | **Query the chain** (read-only) | **Minutes** | Install chia-mcp (`npx chia-mcp` after npm publish, or clone + build), connect to Coinset. No keys, no node, no setup. |
 | **Run a local simulator** | **~15 minutes** | Install chia-blockchain, run `chia dev sim create -d`, execute `quickstart_sim.py`. Includes plot generation. |
-| **Send XCH programmatically** | **~1 hour** | Understand the coinset model (spend bundles, not "send to address"), use chia-wallet-sdk or the wallet RPC. The simulator quickstart covers the full lifecycle. |
+| **Send XCH programmatically** | **~1 hour** | Understand the coinset model (spend bundles, not "send to address"), use [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) (Rust, production-ready — powers the [Sage](https://github.com/xch-dev/sage) wallet) or the wallet RPC. The simulator quickstart covers the full lifecycle. |
 | **Write a custom ChiaLisp puzzle** | **1–3 days** | Learn CLVM fundamentals (chialisp.com), understand conditions and currying, test on the simulator. Expect the coinset model to feel unfamiliar if coming from EVM — budget time for the mental-model shift. |
 | **Build a production dApp** | **1–3 weeks** | Puzzle design + testing, singleton/CAT/DID patterns, security review. The CLVM audit ecosystem is thinner than EVM — budget more review time. Consider Rue (Rust-like syntax for CLVM) as an alternative to raw ChiaLisp. |
 
 These estimates assume a developer experienced with another blockchain. Pure beginners should roughly double the ChiaLisp/puzzle estimates.
+
+**Developer onboarding comparison:** Chia's [crash course](https://docs.chia.net/guides/crash-course/introduction/) provides a structured path from installation through farming to ChiaLisp development, with a local simulator available in ~15 minutes. Ethereum's developer ecosystem is significantly larger — more tutorials, more tooling (Hardhat, Foundry, Remix), more Stack Overflow answers, more auditing firms. However, Chia's onboarding has a lower infrastructure barrier: querying the chain requires zero setup (Coinset provides free unauthenticated RPC access), while Ethereum typically requires an Infura/Alchemy API key or running a ~1TB+ node. The tradeoff: Chia is faster to "hello world" for reads, but Ethereum has more learning resources and community support for complex development.
 
 ## Comparison Quick Reference
 

@@ -158,7 +158,7 @@ Both are MCP servers for Chia, but they serve different roles:
 | [chia-blockchain](https://github.com/Chia-Network/chia-blockchain) | Python | Reference implementation, full node, wallet, simulator |
 | [chia_rs](https://github.com/Chia-Network/chia_rs) | Rust | Core types, CLVM, BLS, performance-critical code |
 | [chialisp](https://github.com/Chia-Network/chialisp) (formerly clvm_tools_rs) | Rust | CLVM compiler and debugging tools |
-| [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) | Rust | Wallet operations, offer parsing, coin inspection |
+| [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) | Rust | Wallet operations, offer parsing, coin inspection. Production-ready — powers [Sage](https://github.com/xch-dev/sage), a production wallet with active users. |
 | [Rue](https://github.com/xch-dev/rue) | Custom | High-level language compiling to CLVM |
 | [chia-mcp](https://github.com/Chia-Network/chia-mcp) | TypeScript | MCP server for agent blockchain access |
 | [Sage](https://github.com/xch-dev/sage) | Rust | Modern wallet implementation |
