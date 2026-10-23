@@ -133,7 +133,7 @@ Both are MCP servers for Chia, but they serve different roles:
 | **Puzzle/solution inspection** | ✅ | ✅ (with decoded conditions) |
 | **Composite tools** | ✅ `get_address_summary`, `trace_coin_lineage`, `summarize_block`, `decode_offer` | ❌ |
 | **Error handling** | Structured error codes, network envelope on every response | Varies |
-| **LLM-optimized docs** | ✅ 42 common mistakes, embedded guides, truncation hints | Basic |
+| **LLM-optimized docs** | ✅ 45 common mistakes, embedded guides, truncation hints | Basic |
 | **Authentication** | None required (Coinset hosted) or mTLS (local node) | None required |
 | **push_tx** | ✅ (opt-in via env var) | ✅ |
 
