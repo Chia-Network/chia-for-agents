@@ -186,4 +186,4 @@ This shows where the value went — typically a payment coin and a change coin.
 - Use `testnet11.api.coinset.org` for testnet, `api.coinset.org` for mainnet
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*

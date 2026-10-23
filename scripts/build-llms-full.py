@@ -35,6 +35,7 @@ SOURCES = [
     "resources/coin-model.md",
     "resources/chialisp-basics.md",
     "resources/rpc-quickstart.md",
+    "resources/errors.md",
     "SECURITY.md",
     "chia-blockchain/chia-blockchain-AGENTS.md",
     "chia-blockchain/chia-blockchain-AGENTS-new.md",

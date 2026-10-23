@@ -26,7 +26,7 @@
   "tx_block_ratio": 0.36,
   "mean_tx_block_interval_seconds": 52,
   "node_cost_estimates": {
-    "_note": "From full_node_rpc_api.py _get_spendbundle_type_cost (node's built-in stopgap estimates). CLVM cost units (not mojos). send_xch_transaction (9,401,710) is the node's 1-input/2-output estimate. The ~19 TPS derivation uses ~6M in-generator cost (compressed within a block) — ~6M in-generator cost is what makes the documented ~1,000 tx/block figure consistent with the 11e9 budget (1,000 × 6M = 6e9, fitting within MAX_BLOCK_COST_CLVM of 11e9). Use ~17M (standalone) for fee estimation of isolated spend bundles; the node estimate below is what the node uses internally for its cost-sampling bucket.",
+    "_note": "From full_node_rpc_api.py _get_spendbundle_type_cost (node's built-in stopgap estimates). CLVM cost units (not mojos). send_xch_transaction (9,401,710) is the node's 1-input/2-output estimate. The ~19 TPS derivation uses ~6M in-generator cost (compressed within a block) \u2014 ~6M in-generator cost is what makes the documented ~1,000 tx/block figure consistent with the 11e9 budget (1,000 \u00d7 6M = 6e9, fitting within MAX_BLOCK_COST_CLVM of 11e9). Use ~17M (standalone) for fee estimation of isolated spend bundles; the node estimate below is what the node uses internally for its cost-sampling bucket.",
     "send_xch_transaction": 9401710,
     "cat_spend": 36382111,
     "take_offer": 721393265,
@@ -112,7 +112,7 @@
     "0x5a": "SOFTFORK"
   },
   "puzzle_mod_hashes": {
-    "_comment": "Tree hashes of the uninstantiated (uncurried) puzzle modules. These are the template hashes — not coin puzzle hashes (which also incorporate curried arguments). Source: chia_puzzles_py.programs from chia-blockchain 2.7.4.",
+    "_comment": "Tree hashes of the uninstantiated (uncurried) puzzle modules. These are the template hashes \u2014 not coin puzzle hashes (which also incorporate curried arguments). Source: chia_puzzles_py.programs from chia-blockchain 2.7.4.",
     "p2_delegated_puzzle_or_hidden_puzzle": "0xe9aaa49f45bad5c889b86ee3341550c155cfdd10c3a6757de618d20612fffd52",
     "p2_delegated_puzzle_or_hidden_puzzle_note": "Standard XCH transaction puzzle. Coins locked with 0x<public_key> curried in use this mod hash as their outer template. Most ordinary XCH wallets produce p2 coins.",
     "cat_v2": "0x37bef360ee858133b69d595a906dc45d01af50379dad515eb9518abb7c1d2a7a",
@@ -126,5 +126,10 @@
   },
   "standard_xch_send_cost_standalone": 17000000,
   "standard_xch_send_cost_in_generator": 6000000,
-  "_standard_xch_send_cost_note": "17M is the standalone single-bundle cost measured by chialisp.com (puzzle reveals fully serialized). 6M is the in-generator cost when puzzle reveals are compressed/deduplicated across a block. A full transaction block holds ~1,000 two-in/two-out sends (defined by docs.chia.net as 2,000 outputs), giving ~19 TPS at the ~52s mean tx-block interval. Use 17M only for fee estimation of isolated spend bundles. See node_cost_estimates._note for the relationship to the node internal 9.4M figure."
+  "_standard_xch_send_cost_note": "17M is the standalone single-bundle cost measured by chialisp.com (puzzle reveals fully serialized). 6M is the in-generator cost when puzzle reveals are compressed/deduplicated across a block. A full transaction block holds ~1,000 two-in/two-out sends (defined by docs.chia.net as 2,000 outputs), giving ~19 TPS at the ~52s mean tx-block interval. Use 17M only for fee estimation of isolated spend bundles. See node_cost_estimates._note for the relationship to the node internal 9.4M figure.",
+  "agg_sig_additional_data": {
+    "mainnet": "ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb",
+    "testnet11": "37a90eb5185a9c4439a91ddc98bbadce7b4feba060d50116a067de66bf236615",
+    "_comment": "AGG_SIG_ME additional data = genesis_challenge of each network. Used for signature verification."
+  }
 }

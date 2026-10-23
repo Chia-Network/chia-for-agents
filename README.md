@@ -49,7 +49,7 @@ These require a wallet RPC (local node with mTLS) or a different service — not
 
 ## Quick Start for Agents
 
-1. **Interact with the blockchain** — Use [chia-mcp](chia-mcp/) (MCP server) for tool-based access to Chia RPCs _(draft — not yet on npm; install from source)_
+1. **Interact with the blockchain** — Use [chia-mcp](https://github.com/Chia-Network/chia-mcp) (MCP server) for tool-based access to Chia RPCs: `npx -y chia-mcp@1.0.2`
 2. **Understand the data model** — Read [resources/coin-model.md](resources/coin-model.md) to learn Chia's coin/UTXO model
 3. **Call RPCs directly** — Use [resources/rpc-quickstart.md](resources/rpc-quickstart.md) for HTTP API access via Coinset or a local node
 4. **Contribute code** — Read [chia-blockchain-AGENTS.md](chia-blockchain-AGENTS.md) for repo orientation
@@ -68,7 +68,7 @@ These require a wallet RPC (local node with mTLS) or a different service — not
 
 | Resource | Description |
 |----------|-------------|
-| [chia-mcp/](chia-mcp/) | MCP server for AI agents — tool-based blockchain access |
+| [chia-mcp/](chia-mcp/) | MCP server routing stub — the actual server lives at [github.com/Chia-Network/chia-mcp](https://github.com/Chia-Network/chia-mcp) |
 | [chia-blockchain-AGENTS.md](chia-blockchain-AGENTS.md) | Domain primer for chia-blockchain contributors |
 
 ### 📚 Resources
@@ -115,4 +115,4 @@ See [SECURITY.md](SECURITY.md). All documentation here covers read-only blockcha
 Apache-2.0 — see [LICENSE](LICENSE).
 
 ---
-*Last verified against chia-blockchain 2.x and chia-mcp 1.0.1 on 2026-10-15.*
+*Last verified against chia-blockchain 2.x and chia-mcp 1.0.2 on 2026-10-23.*
