@@ -99,7 +99,7 @@ Be honest about the limitations:
 
 ## Transaction Costs
 
-Chia transaction fees are denominated in mojos (1 XCH = 10¹² mojos). The fee for a spend bundle equals its CLVM cost multiplied by a fee-per-cost rate; the minimum rate to enter the mempool is 5 mojos per CLVM cost unit.
+Chia transaction fees are denominated in mojos (1 XCH = 10¹² mojos). The fee for a spend bundle equals its CLVM cost multiplied by a fee-per-cost rate. When the mempool is not full, no fee is required to enter the mempool. When the mempool is full, the minimum rate is 5 mojos per CLVM cost unit — and can increase significantly during sustained congestion as transactions compete for inclusion. See [Fees](https://docs.chia.net/chia-blockchain/architecture/mempool/fees) for details.
 
 | Transaction type | CLVM cost (approx.) | Minimum fee (mojos) | Minimum fee (XCH) |
 |---|---|---|---|
@@ -108,9 +108,9 @@ Chia transaction fees are denominated in mojos (1 XCH = 10¹² mojos). The fee f
 | Take offer | ~721M | ~3.6B mojos | ~0.0036 XCH |
 | NFT transfer | ~74M | ~370M mojos | ~0.00037 XCH |
 
-*Source: `node_cost_estimates` from chia-blockchain's `full_node_rpc_api.py`. These are the node's built-in cost estimates; actual costs vary by puzzle complexity. At typical XCH prices ($20–40), a standard send costs well under $0.01.*
+*Source: `node_cost_estimates` from chia-blockchain's `full_node_rpc_api.py`. These are the node's built-in cost estimates; actual costs vary by puzzle complexity. At typical XCH prices, a standard send costs well under $0.01 — but fees could be significantly higher if the mempool is completely full for a sustained duration.*
 
-**Comparison with Ethereum (L1):** Ethereum gas fees are highly variable. A simple ETH transfer requires 21,000 gas units. As of mid-2026, average base fees on Ethereum L1 have dropped to ~0.5 gwei during low-congestion periods ([source](https://coinpaprika.com/education/ethereum-gas-fees-in-2026-how-to-cut-costs-with-layer-2-and-timing)), making a simple transfer ~$0.04 — but during congestion spikes (2025 averages ranged from 8–20 gwei), simple transfers cost $0.40–$1.20 and complex DeFi transactions $3–$15+ ([source](https://www.gate.com/blog/eth-gas-2025-fee-trends-layer-2-impact-and-cost-optimization)). Ethereum L2s (Arbitrum, Base, Optimism) reduce costs to cents but add bridge complexity. Chia fees are more predictable: the mempool uses a fixed fee-per-cost rate rather than a dynamic auction, so costs don't spike with network activity the same way (though during sustained high demand, higher fee rates can outbid lower ones).
+**Comparison with Ethereum (L1):** Ethereum gas fees are highly variable. A simple ETH transfer requires 21,000 gas units. As of mid-2026, average base fees on Ethereum L1 have dropped to ~0.5 gwei during low-congestion periods ([source](https://coinpaprika.com/education/ethereum-gas-fees-in-2026-how-to-cut-costs-with-layer-2-and-timing)), making a simple transfer ~$0.04 — but during congestion spikes (2025 averages ranged from 8–20 gwei), simple transfers cost $0.40–$1.20 and complex DeFi transactions $3–$15+ ([source](https://www.gate.com/blog/eth-gas-2025-fee-trends-layer-2-impact-and-cost-optimization)). Ethereum L2s (Arbitrum, Base, Optimism) reduce costs to cents but add bridge complexity.
 
 ## Getting Started — Time Estimates
 
