@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chia RPC Playground</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1a1a2e;--bg2:#16213e;--bg3:#0f3460;--surface:#222244;
+  --accent:#E5FE75;--text:#e0e0e0;--text-dim:#8888aa;--mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  --border:#333355;--danger:#ff6b6b;--success:#51cf66;
+}
+html{font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--accent)}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.header h1{font-size:1.2rem;display:flex;align-items:center;gap:8px;color:var(--accent)}
+.header h1 span{font-size:1.4rem}
+.network-sel{display:flex;align-items:center;gap:8px}
+.network-sel label{color:var(--text-dim);font-size:.85rem}
+.network-sel select{background:var(--surface);color:var(--accent);border:1px solid var(--accent);padding:4px 8px;border-radius:4px;font-family:var(--mono);font-size:.85rem;cursor:pointer}
+
+/* Main layout */
+.main{display:flex;flex:1;overflow:hidden}
+.left,.right{padding:16px;overflow-y:auto}
+.left{width:45%;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:12px}
+.right{width:55%;display:flex;flex-direction:column;gap:8px}
+
+/* Controls */
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{color:var(--text-dim);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+.field select,.field textarea,.field input{background:var(--surface);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:4px;font-family:var(--mono);font-size:.9rem;resize:vertical}
+.field select{cursor:pointer}
+optgroup{color:var(--accent);font-style:normal}
+option{color:var(--text)}
+.method-desc{color:var(--text-dim);font-size:.8rem;font-style:italic;min-height:1.2em}
+.coinset-note{color:#ffcc00;font-size:.75rem;margin-top:2px}
+textarea#params{min-height:140px;line-height:1.4}
+
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:8px 16px;border:none;border-radius:4px;font-family:var(--mono);font-size:.85rem;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--accent);color:#1a1a2e;font-weight:700}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-small{padding:4px 10px;font-size:.8rem}
+.countdown{color:var(--accent);font-size:.8rem;margin-left:4px}
+
+/* Response */
+.resp-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.resp-header h2{font-size:1rem;color:var(--text-dim)}
+.resp-status{font-size:.85rem}
+.resp-status.ok{color:var(--success)}
+.resp-status.err{color:var(--danger)}
+.resp-body{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px;overflow:auto;white-space:pre-wrap;word-break:break-all;font-size:.85rem;line-height:1.5;min-height:200px}
+.resp-truncated{color:#ffcc00;font-size:.8rem;margin-top:4px}
+.curl-box{background:#111;border:1px solid var(--border);border-radius:4px;padding:10px;font-size:.8rem;white-space:pre-wrap;word-break:break-all;margin-top:8px}
+
+/* Utilities */
+.utils-section{border-top:1px solid var(--border);padding-top:12px;margin-top:auto}
+.utils-section h3{color:var(--accent);font-size:.9rem;margin-bottom:8px}
+.util-tabs{display:flex;gap:4px;margin-bottom:8px}
+.util-tab{padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:4px 4px 0 0;cursor:pointer;color:var(--text-dim);font-size:.8rem;font-family:var(--mono)}
+.util-tab.active{background:var(--bg3);color:var(--accent);border-bottom-color:var(--bg3)}
+.util-panel{display:none;background:var(--bg3);border:1px solid var(--border);border-radius:0 4px 4px 4px;padding:12px}
+.util-panel.active{display:flex;flex-direction:column;gap:8px}
+.util-panel .field input{width:100%}
+.util-result{background:var(--surface);padding:8px;border-radius:4px;font-size:.85rem;word-break:break-all;min-height:1.5em}
+
+/* Footer */
+.footer{padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);font-size:.75rem;color:var(--text-dim);text-align:center;line-height:1.6}
+
+/* Responsive */
+@media(max-width:768px){
+  .main{flex-direction:column}
+  .left,.right{width:100%;border-right:none}
+  .left{border-bottom:1px solid var(--border)}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>🌿</span> Chia RPC Playground</h1>
+  <div class="network-sel">
+    <label>Network:</label>
+    <select id="network">
+      <option value="https://api.coinset.org/">Mainnet</option>
+      <option value="https://testnet11.api.coinset.org/">Testnet11</option>
+    </select>
+    <span id="network-badge" style="padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700;background:var(--accent);color:#1a1a2e">MAINNET</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="left">
+    <div class="field">
+      <label>Method</label>
+      <select id="method"></select>
+      <div class="method-desc" id="method-desc"></div>
+    </div>
+    <div class="field">
+      <label>Parameters (JSON)</label>
+      <textarea id="params" spellcheck="false"></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="run-btn" onclick="runRpc()">▶ Run</button>
+      <button class="btn btn-secondary" onclick="resetParams()">Reset</button>
+      <span class="countdown" id="countdown"></span>
+    </div>
+
+    <div class="utils-section">
+      <h3>─── Utilities ───</h3>
+      <div class="util-tabs">
+        <div class="util-tab active" onclick="showUtil('encode',this)">Encode</div>
+        <div class="util-tab" onclick="showUtil('decode',this)">Decode</div>
+        <div class="util-tab" onclick="showUtil('coinid',this)">Coin ID</div>
+      </div>
+      <div class="util-panel active" id="util-encode">
+        <div class="field"><label>Puzzle Hash (0x...)</label><input id="enc-ph" placeholder="0xad704c74..."></div>
+        <div class="field"><label>Prefix</label>
+          <select id="enc-prefix"><option value="xch">xch (mainnet)</option><option value="txch">txch (testnet)</option></select>
+        </div>
+        <button class="btn btn-primary btn-small" onclick="doEncode()">Encode Address</button>
+        <div class="util-result" id="enc-result"></div>
+      </div>
+      <div class="util-panel" id="util-decode">
+        <div class="field"><label>Bech32m Address</label><input id="dec-addr" placeholder="xch1..."></div>
+        <button class="btn btn-primary btn-small" onclick="doDecode()">Decode Address</button>
+        <div class="util-result" id="dec-result"></div>
+      </div>
+      <div class="util-panel" id="util-coinid">
+        <div class="field"><label>Parent Coin Info (0x...)</label><input id="cid-parent" placeholder="0x..."></div>
+        <div class="field"><label>Puzzle Hash (0x...)</label><input id="cid-ph" placeholder="0x..."></div>
+        <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="number" placeholder="1000000000000"></div>
+        <button class="btn btn-primary btn-small" onclick="doCoinId()">Compute Coin ID</button>
+        <div class="util-result" id="cid-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="resp-header">
+      <h2>Response</h2>
+      <div>
+        <span class="resp-status" id="resp-status"></span>
+      </div>
+    </div>
+    <div class="resp-body" id="resp-body">Select a method and click Run.</div>
+    <div class="resp-truncated" id="resp-truncated"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-small" onclick="copyResponse()">📋 Copy</button>
+      <button class="btn btn-secondary btn-small" onclick="showCurl()">🔗 Show as curl</button>
+    </div>
+    <div class="curl-box" id="curl-box" style="display:none"></div>
+  </div>
+</div>
+
+<div class="footer">
+  ⚠️ Queries are sent directly from your browser to Coinset's public nodes (<a href="https://coinset.org" target="_blank">coinset.org</a>). No data passes through Chia Network servers. Avoid querying addresses you want to keep private.<br>
+  Powered by <a href="https://coinset.org" target="_blank">Coinset</a> · Docs: <a href="https://github.com/Chia-Network/chia-for-agents" target="_blank">chia-for-agents</a>
+</div>
+
+<script>
+// ─── RPC Method Catalog ───
+const METHODS = [
+  {cat:"Blockchain State", name:"get_blockchain_state", params:{}, desc:"Get the current blockchain state"},
+  {cat:"Blockchain State", name:"get_network_info", params:{}, desc:"Get network name and prefix"},
+
+  {cat:"Blocks", name:"get_block", params:{header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de"}, desc:"Get a full block by header hash"},
+  {cat:"Blocks", name:"get_block_record", params:{header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de"}, desc:"Get a block record by header hash"},
+  {cat:"Blocks", name:"get_block_record_by_height", params:{height:8999003}, desc:"Get a block record by height"},
+  {cat:"Blocks", name:"get_block_records", params:{start:8999000,end:8999005}, desc:"Get block records in a range"},
+  {cat:"Blocks", name:"get_blocks", params:{start:8999000,end:8999002}, desc:"Get full blocks in a range"},
+  {cat:"Blocks", name:"get_block_spends", params:{header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de"}, desc:"Get coin spends in a block"},
+  {cat:"Blocks", name:"get_block_spends_with_conditions", params:{header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de"}, desc:"Get coin spends with parsed conditions"},
+  {cat:"Blocks", name:"get_additions_and_removals", params:{header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de"}, desc:"Get coins added and removed in a block"},
+  {cat:"Blocks", name:"get_unfinished_block_headers", params:{}, desc:"Get headers of unfinished blocks"},
+  {cat:"Blocks", name:"get_block_count_metrics", params:{}, desc:"Get block count metrics"},
+
+  {cat:"Coins", name:"get_coin_record_by_name", params:{name:"0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"}, desc:"Get a coin record by coin ID"},
+  {cat:"Coins", name:"get_coin_records_by_names", params:{names:["0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"]}, desc:"Get coin records by multiple coin IDs"},
+  {cat:"Coins", name:"get_coin_records_by_puzzle_hash", params:{puzzle_hash:"0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70",include_spent_coins:false}, desc:"Get coins by puzzle hash"},
+  {cat:"Coins", name:"get_coin_records_by_puzzle_hashes", params:{puzzle_hashes:["0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70"],include_spent_coins:false}, desc:"Get coins by multiple puzzle hashes"},
+  {cat:"Coins", name:"get_coin_records_by_hint", params:{hint:"0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70",include_spent_coins:false}, desc:"Get coins by hint"},
+  {cat:"Coins", name:"get_coin_records_by_parent_ids", params:{parent_ids:["0x5978b7210a25a3962a2df921b210536a703647ad3969580e4cf021482ee4c54b"]}, desc:"Get coins by parent coin IDs"},
+  {cat:"Coins", name:"get_puzzle_and_solution", params:{coin_id:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04",height:8999005}, desc:"Get puzzle and solution for a spent coin"},
+
+  {cat:"Coinset Extended ⚡", name:"get_puzzle_and_solution_with_conditions", params:{coin_id:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04",height:8999005}, desc:"Puzzle, solution & parsed conditions (Coinset-only)", coinsetOnly:true},
+  {cat:"Coinset Extended ⚡", name:"get_memos_by_coin_name", params:{name:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04"}, desc:"Get memos attached to a coin (Coinset-only)", coinsetOnly:true},
+  {cat:"Coinset Extended ⚡", name:"get_coin_records_by_hints", params:{hints:["0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70"],include_spent_coins:false}, desc:"Get coins by multiple hints (Coinset-only)", coinsetOnly:true},
+
+  {cat:"Mempool", name:"get_all_mempool_tx_ids", params:{}, desc:"Get all transaction IDs in mempool"},
+  {cat:"Mempool", name:"get_all_mempool_items", params:{}, desc:"Get all mempool items (large response)"},
+  {cat:"Mempool", name:"get_mempool_item_by_tx_id", params:{tx_id:""}, desc:"Get a mempool item by transaction ID (needs live tx ID)"},
+  {cat:"Mempool", name:"get_mempool_items_by_coin_name", params:{coin_name:"0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"}, desc:"Get mempool items involving a coin"},
+  {cat:"Mempool", name:"get_fee_estimate", params:{target_times:[60,120,300]}, desc:"Estimate fees for target confirmation times"},
+
+  {cat:"Network", name:"get_network_space", params:{newer_block_header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de",older_block_header_hash:"0x2fe4a9a2b8c5ddca8a83f24eaddffb9c7f048a0e651cfa3628127f0b05199f63"}, desc:"Estimate network space between two blocks"},
+];
+
+// ─── Populate dropdown ───
+const methodSel = document.getElementById('method');
+let lastCat = '';
+let optgroup;
+METHODS.forEach((m, i) => {
+  if (m.cat !== lastCat) {
+    optgroup = document.createElement('optgroup');
+    optgroup.label = m.cat;
+    methodSel.appendChild(optgroup);
+    lastCat = m.cat;
+  }
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = m.name;
+  optgroup.appendChild(opt);
+});
+
+function getMethod() { return METHODS[parseInt(methodSel.value)]; }
+
+function onMethodChange() {
+  const m = getMethod();
+  document.getElementById('params').value = JSON.stringify(m.params, null, 2);
+  let desc = m.desc;
+  if (m.coinsetOnly) desc += ' <span class="coinset-note">⚡ Coinset-only — not available on local nodes</span>';
+  document.getElementById('method-desc').innerHTML = desc;
+}
+methodSel.addEventListener('change', onMethodChange);
+onMethodChange();
+
+function resetParams() { onMethodChange(); }
+
+// ─── Network selector ───
+const networkSel = document.getElementById('network');
+const networkBadge = document.getElementById('network-badge');
+networkSel.addEventListener('change', () => {
+  const isMain = networkSel.value.includes('api.coinset.org/') && !networkSel.value.includes('testnet');
+  networkBadge.textContent = isMain ? 'MAINNET' : 'TESTNET11';
+  networkBadge.style.background = isMain ? 'var(--accent)' : '#ffcc00';
+  networkBadge.style.color = '#1a1a2e';
+});
+
+// ─── Rate limiting ───
+let lastReqTime = 0;
+let countdownInterval = null;
+const RATE_LIMIT_MS = 1000;
+
+function canRequest() {
+  const now = Date.now();
+  const elapsed = now - lastReqTime;
+  if (elapsed < RATE_LIMIT_MS) {
+    const remaining = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
+    showCountdown(RATE_LIMIT_MS - elapsed);
+    return false;
+  }
+  return true;
+}
+
+function showCountdown(ms) {
+  const cd = document.getElementById('countdown');
+  const end = Date.now() + ms;
+  if (countdownInterval) clearInterval(countdownInterval);
+  const tick = () => {
+    const left = end - Date.now();
+    if (left <= 0) { cd.textContent = ''; clearInterval(countdownInterval); countdownInterval = null; return; }
+    cd.textContent = `Rate limit: ${(left/1000).toFixed(1)}s`;
+  };
+  tick();
+  countdownInterval = setInterval(tick, 100);
+}
+
+// ─── Last response storage ───
+let lastResponseText = '';
+let lastCurlCmd = '';
+
+// ─── RPC execution ───
+async function runRpc() {
+  if (!canRequest()) return;
+  const m = getMethod();
+  const base = networkSel.value;
+  const url = base + m.name;
+  let params;
+  try {
+    params = JSON.parse(document.getElementById('params').value);
+  } catch(e) {
+    showError('Invalid JSON: ' + e.message);
+    return;
+  }
+
+  const body = JSON.stringify(params);
+  lastCurlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${body}'`;
+
+  const runBtn = document.getElementById('run-btn');
+  runBtn.disabled = true;
+  runBtn.textContent = '⏳ Running...';
+  document.getElementById('resp-body').textContent = 'Loading...';
+  document.getElementById('resp-status').textContent = '';
+  document.getElementById('resp-truncated').textContent = '';
+  document.getElementById('curl-box').style.display = 'none';
+
+  lastReqTime = Date.now();
+  const startTime = performance.now();
+
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: body
+    });
+    const elapsed = Math.round(performance.now() - startTime);
+    const text = await resp.text();
+    const sizeKB = (new TextEncoder().encode(text).length / 1024).toFixed(1);
+    const fullSizeKB = parseFloat(sizeKB);
+
+    const statusEl = document.getElementById('resp-status');
+    statusEl.textContent = `${resp.status} ${resp.statusText} · ${elapsed}ms · ${sizeKB} KB`;
+    statusEl.className = 'resp-status ' + (resp.ok ? 'ok' : 'err');
+
+    const MAX_SIZE = 100 * 1024; // 100KB
+    let display = text;
+    if (text.length > MAX_SIZE) {
+      display = text.substring(0, MAX_SIZE);
+      document.getElementById('resp-truncated').textContent = `⚠️ Response truncated to 100KB (full response was ${fullSizeKB} KB)`;
+    }
+
+    try {
+      lastResponseText = JSON.stringify(JSON.parse(display), null, 2);
+    } catch {
+      lastResponseText = display;
+    }
+    document.getElementById('resp-body').textContent = lastResponseText;
+  } catch(err) {
+    const elapsed = Math.round(performance.now() - startTime);
+    const statusEl = document.getElementById('resp-status');
+    statusEl.textContent = `Error · ${elapsed}ms`;
+    statusEl.className = 'resp-status err';
+    lastResponseText = '';
+    document.getElementById('resp-body').innerHTML =
+      `<span style="color:var(--danger)">Direct API access unavailable. Use this curl command instead:</span>\n\n` +
+      `<code>${escHtml(lastCurlCmd)}</code>`;
+  } finally {
+    runBtn.disabled = false;
+    runBtn.textContent = '▶ Run';
+  }
+}
+
+function showError(msg) {
+  document.getElementById('resp-body').innerHTML = `<span style="color:var(--danger)">${escHtml(msg)}</span>`;
+  document.getElementById('resp-status').textContent = '';
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function copyResponse() {
+  if (!lastResponseText) return;
+  navigator.clipboard.writeText(lastResponseText).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function showCurl() {
+  if (!lastCurlCmd) {
+    const m = getMethod();
+    const base = networkSel.value;
+    const url = base + m.name;
+    let params;
+    try { params = JSON.parse(document.getElementById('params').value); } catch { params = {}; }
+    lastCurlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${JSON.stringify(params)}'`;
+  }
+  const box = document.getElementById('curl-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  box.textContent = lastCurlCmd;
+}
+
+// ─── Utilities ───
+function showUtil(id, tab) {
+  document.querySelectorAll('.util-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.util-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('util-' + id).classList.add('active');
+  tab.classList.add('active');
+}
+
+// ─── Bech32m Implementation ───
+const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+const BECH32M_CONST = 0x2bc830a3;
+
+function bech32Polymod(values) {
+  const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+  let chk = 1;
+  for (const v of values) {
+    const b = chk >> 25;
+    chk = ((chk & 0x1ffffff) << 5) ^ v;
+    for (let i = 0; i < 5; i++) if ((b >> i) & 1) chk ^= GEN[i];
+  }
+  return chk;
+}
+
+function bech32HrpExpand(hrp) {
+  const ret = [];
+  for (let i = 0; i < hrp.length; i++) ret.push(hrp.charCodeAt(i) >> 5);
+  ret.push(0);
+  for (let i = 0; i < hrp.length; i++) ret.push(hrp.charCodeAt(i) & 31);
+  return ret;
+}
+
+function bech32CreateChecksum(hrp, data) {
+  const values = bech32HrpExpand(hrp).concat(data).concat([0,0,0,0,0,0]);
+  const polymod = bech32Polymod(values) ^ BECH32M_CONST;
+  const ret = [];
+  for (let i = 0; i < 6; i++) ret.push((polymod >> (5 * (5 - i))) & 31);
+  return ret;
+}
+
+function bech32VerifyChecksum(hrp, data) {
+  return bech32Polymod(bech32HrpExpand(hrp).concat(data)) === BECH32M_CONST;
+}
+
+function bech32Encode(hrp, data) {
+  const combined = data.concat(bech32CreateChecksum(hrp, data));
+  return hrp + '1' + combined.map(d => CHARSET[d]).join('');
+}
+
+function bech32Decode(str) {
+  str = str.toLowerCase();
+  const pos = str.lastIndexOf('1');
+  if (pos < 1 || pos + 7 > str.length) throw new Error('Invalid bech32m string');
+  const hrp = str.substring(0, pos);
+  const data = [];
+  for (let i = pos + 1; i < str.length; i++) {
+    const d = CHARSET.indexOf(str[i]);
+    if (d === -1) throw new Error('Invalid character: ' + str[i]);
+    data.push(d);
+  }
+  if (!bech32VerifyChecksum(hrp, data)) throw new Error('Invalid checksum');
+  return { hrp, data: data.slice(0, data.length - 6) };
+}
+
+function convertBits(data, fromBits, toBits, pad) {
+  let acc = 0, bits = 0;
+  const ret = [];
+  const maxv = (1 << toBits) - 1;
+  for (const value of data) {
+    if (value < 0 || value >> fromBits) throw new Error('Invalid value');
+    acc = (acc << fromBits) | value;
+    bits += fromBits;
+    while (bits >= toBits) { bits -= toBits; ret.push((acc >> bits) & maxv); }
+  }
+  if (pad) { if (bits > 0) ret.push((acc << (toBits - bits)) & maxv); }
+  else if (bits >= fromBits || ((acc << (toBits - bits)) & maxv)) throw new Error('Invalid padding');
+  return ret;
+}
+
+function puzzleHashToAddress(phHex, prefix) {
+  const ph = phHex.replace(/^0x/, '');
+  if (ph.length !== 64) throw new Error('Puzzle hash must be 32 bytes (64 hex chars)');
+  const bytes = [];
+  for (let i = 0; i < ph.length; i += 2) bytes.push(parseInt(ph.substr(i, 2), 16));
+  const data5 = convertBits(bytes, 8, 5, true);
+  return bech32Encode(prefix, data5);
+}
+
+function addressToPuzzleHash(addr) {
+  const { hrp, data } = bech32Decode(addr);
+  const bytes = convertBits(data, 5, 8, false);
+  return { hrp, puzzleHash: '0x' + bytes.map(b => b.toString(16).padStart(2, '0')).join('') };
+}
+
+function doEncode() {
+  const ph = document.getElementById('enc-ph').value.trim();
+  const prefix = document.getElementById('enc-prefix').value;
+  try {
+    const addr = puzzleHashToAddress(ph, prefix);
+    document.getElementById('enc-result').textContent = addr;
+  } catch(e) {
+    document.getElementById('enc-result').innerHTML = `<span style="color:var(--danger)">${escHtml(e.message)}</span>`;
+  }
+}
+
+function doDecode() {
+  const addr = document.getElementById('dec-addr').value.trim();
+  try {
+    const { hrp, puzzleHash } = addressToPuzzleHash(addr);
+    document.getElementById('dec-result').textContent = `Prefix: ${hrp}\nPuzzle Hash: ${puzzleHash}`;
+  } catch(e) {
+    document.getElementById('dec-result').innerHTML = `<span style="color:var(--danger)">${escHtml(e.message)}</span>`;
+  }
+}
+
+async function doCoinId() {
+  const parent = document.getElementById('cid-parent').value.trim().replace(/^0x/, '');
+  const ph = document.getElementById('cid-ph').value.trim().replace(/^0x/, '');
+  const amount = document.getElementById('cid-amount').value.trim();
+  try {
+    if (parent.length !== 64) throw new Error('Parent coin info must be 32 bytes');
+    if (ph.length !== 64) throw new Error('Puzzle hash must be 32 bytes');
+    const amtBig = BigInt(amount);
+    if (amtBig < 0n) throw new Error('Amount must be non-negative');
+
+    // Encode amount as big-endian bytes, minimum 1 byte
+    let amtHex = amtBig.toString(16);
+    if (amtHex.length % 2) amtHex = '0' + amtHex;
+    // CLVM int encoding: if high bit set, no padding needed for positive since we concat raw
+    // Actually for coin ID: it's SHA256(parent + puzzle_hash + int_to_bytes(amount))
+    // int_to_bytes uses big-endian with minimum bytes, but amount is always positive in coins
+    // and uses (amount).to_bytes((amount.bit_length() + 8) >> 3, 'big') in Python
+    const amtBits = amtBig === 0n ? 0 : amtBig.toString(2).length;
+    const amtByteLen = amtBig === 0n ? 0 : ((amtBits + 8) >> 3);
+    let amtBytes;
+    if (amtByteLen === 0) {
+      amtBytes = new Uint8Array(0);
+    } else {
+      amtHex = amtBig.toString(16).padStart(amtByteLen * 2, '0');
+      amtBytes = new Uint8Array(amtByteLen);
+      for (let i = 0; i < amtByteLen; i++) amtBytes[i] = parseInt(amtHex.substr(i * 2, 2), 16);
+    }
+
+    const parentBytes = hexToBytes(parent);
+    const phBytes = hexToBytes(ph);
+    const combined = new Uint8Array(32 + 32 + amtBytes.length);
+    combined.set(parentBytes, 0);
+    combined.set(phBytes, 32);
+    combined.set(amtBytes, 64);
+
+    const hashBuf = await crypto.subtle.digest('SHA-256', combined);
+    const hashArr = new Uint8Array(hashBuf);
+    const coinId = '0x' + Array.from(hashArr).map(b => b.toString(16).padStart(2, '0')).join('');
+    document.getElementById('cid-result').textContent = coinId;
+  } catch(e) {
+    document.getElementById('cid-result').innerHTML = `<span style="color:var(--danger)">${escHtml(e.message)}</span>`;
+  }
+}
+
+function hexToBytes(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+  return bytes;
+}
+</script>
+</body>
+</html>
