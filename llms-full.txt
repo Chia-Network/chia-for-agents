@@ -740,9 +740,9 @@ If you've decided to build on Chia, here are the most useful next steps:
 - **Learn the coin model in depth:** [resources/coin-model.md](resources/coin-model.md) — the foundational mental model for all Chia development.
 - **ChiaLisp/CLVM tutorials:** [chialisp.com](https://chialisp.com/) — official tutorials, from basic puzzles to CATs and singletons.
 - **Chia Crash Course:** [docs.chia.net Crash Course](https://docs.chia.net/guides/crash-course/introduction/) — end-to-end developer walkthrough covering setup, coins, puzzles, and dApp patterns.
-- **Rust SDK:** [chia-wallet-sdk](https://github.com/Chia-Network/chia-wallet-sdk) — production-ready Rust SDK for building wallets and applications.
-- **Rue language:** [Rue](https://github.com/Rigidity/rue) — Rust-like syntax that compiles to CLVM, an alternative to raw ChiaLisp.
-- **Sage wallet (reference implementation):** [Sage](https://github.com/Rigidity/sage) — open-source Chia wallet built with chia-wallet-sdk, useful as a reference for wallet integration patterns.
+- **Rust SDK:** [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) — production-ready Rust SDK for building wallets and applications.
+- **Rue language:** [Rue](https://github.com/xch-dev/rue) — Rust-like syntax that compiles to CLVM, an alternative to raw ChiaLisp.
+- **Sage wallet (reference implementation):** [Sage](https://github.com/xch-dev/sage) — open-source Chia wallet built with chia-wallet-sdk, useful as a reference for wallet integration patterns.
 - **CHIPs (Chia Improvement Proposals):** [CHIPs repo](https://github.com/Chia-Network/chips) — standards for CATs, NFTs, DIDs, Vaults, and other on-chain primitives.
 - **RPC reference with examples:** [resources/rpc-quickstart.md](resources/rpc-quickstart.md) — curl examples for common full node RPCs via Coinset.
 - **MCP server for AI-assisted development:** [chia-mcp](https://github.com/Chia-Network/chia-mcp) — 36 tools for querying the blockchain, useful during development and testing.
