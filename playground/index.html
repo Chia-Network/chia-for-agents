@@ -135,7 +135,7 @@ textarea#params{min-height:140px;line-height:1.4}
       <div class="util-panel" id="util-coinid">
         <div class="field"><label>Parent Coin Info (0x...)</label><input id="cid-parent" placeholder="0x..."></div>
         <div class="field"><label>Puzzle Hash (0x...)</label><input id="cid-ph" placeholder="0x..."></div>
-        <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="number" placeholder="1000000000000"></div>
+        <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="text" inputmode="numeric" placeholder="1000000000000"></div>
         <button class="btn btn-primary btn-small" onclick="doCoinId()">Compute Coin ID</button>
         <div class="util-result" id="cid-result"></div>
       </div>
@@ -197,7 +197,7 @@ const METHODS = [
   {cat:"Mempool", name:"get_all_mempool_items", params:{}, desc:"Get all mempool items (large response)"},
   {cat:"Mempool", name:"get_mempool_item_by_tx_id", params:{tx_id:""}, desc:"Get a mempool item by transaction ID (needs live tx ID)"},
   {cat:"Mempool", name:"get_mempool_items_by_coin_name", params:{coin_name:"0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"}, desc:"Get mempool items involving a coin"},
-  {cat:"Mempool", name:"get_fee_estimate", params:{target_times:[60,120,300]}, desc:"Estimate fees for target confirmation times"},
+  {cat:"Mempool", name:"get_fee_estimate", params:{target_times:[60,120,300],cost:11000000}, desc:"Estimate fees for target confirmation times"},
 
   {cat:"Network", name:"get_network_space", params:{newer_block_header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de",older_block_header_hash:"0x2fe4a9a2b8c5ddca8a83f24eaddffb9c7f048a0e651cfa3628127f0b05199f63"}, desc:"Estimate network space between two blocks"},
 ];
@@ -365,7 +365,7 @@ function copyResponse() {
 }
 
 function showCurl() {
-  if (!lastCurlCmd) {
+  {
     const m = getMethod();
     const base = networkSel.value;
     const url = base + m.name;
@@ -459,6 +459,7 @@ function convertBits(data, fromBits, toBits, pad) {
 function puzzleHashToAddress(phHex, prefix) {
   const ph = phHex.replace(/^0x/, '');
   if (ph.length !== 64) throw new Error('Puzzle hash must be 32 bytes (64 hex chars)');
+  if (!/^[0-9a-fA-F]*$/.test(ph)) throw new Error('Puzzle hash contains invalid hex characters');
   const bytes = [];
   for (let i = 0; i < ph.length; i += 2) bytes.push(parseInt(ph.substr(i, 2), 16));
   const data5 = convertBits(bytes, 8, 5, true);
@@ -537,6 +538,8 @@ async function doCoinId() {
 }
 
 function hexToBytes(hex) {
+  if (hex.length % 2 !== 0) throw new Error('Hex string must have even length');
+  if (!/^[0-9a-fA-F]*$/.test(hex)) throw new Error('Invalid hex characters');
   const bytes = new Uint8Array(hex.length / 2);
   for (let i = 0; i < hex.length; i += 2) bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
   return bytes;
