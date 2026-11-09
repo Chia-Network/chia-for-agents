@@ -1047,6 +1047,7 @@ async function runWtStep() {
       const base = networkSel.value;
       const url = base + step.method;
       lastCurlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${JSON.stringify(params)}'`;
+      lastResponseText = '';
       document.getElementById('resp-body').innerHTML =
         `<span style="color:var(--danger)">Direct API access unavailable. Use this curl command instead:</span>\n\n` +
         `<code>${escHtml(lastCurlCmd)}</code>`;
