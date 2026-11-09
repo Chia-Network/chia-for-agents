@@ -15,3 +15,18 @@ jobs:
           python-version: "3.12"
       - name: Verify llms-full.txt is current
         run: python3 scripts/build-llms-full.py --check
+
+  playground-examples-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify playground example data is live
+        run: |
+          curl -sf -X POST https://api.coinset.org/get_blockchain_state \
+            -H "Content-Type: application/json" -d '{}' | jq -e '.success'
+          curl -sf -X POST https://api.coinset.org/get_coin_record_by_name \
+            -H "Content-Type: application/json" \
+            -d '{"name":"0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91"}' \
+            | jq -e '.success'
+          curl -sf -X POST https://api.coinset.org/get_block_record_by_height \
+            -H "Content-Type: application/json" \
+            -d '{"height":8999003}' | jq -e '.success'

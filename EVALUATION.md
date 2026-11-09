@@ -116,7 +116,7 @@ Chia transaction fees are denominated in mojos (1 XCH = 10¹² mojos). The fee f
 
 | Goal | Time | What's involved |
 |------|------|-----------------|
-| **Query the chain** (read-only) | **Minutes** | Install chia-mcp (`npx chia-mcp` after npm publish, or clone + build), connect to Coinset. No keys, no node, no setup. |
+| **Query the chain** (read-only) | **Seconds** | Open the [interactive playground](playground/) — no install, no keys. Or install chia-mcp (`npx chia-mcp` after npm publish, or clone + build) for MCP integration. |
 | **Run a local simulator** | **~15 minutes** | Install chia-blockchain, run `chia dev sim create -d`, execute `quickstart_sim.py`. Includes plot generation. |
 | **Send XCH programmatically** | **~1 hour** | Understand the coinset model (spend bundles, not "send to address"), use [chia-wallet-sdk](https://github.com/xch-dev/chia-wallet-sdk) (Rust, production-ready — powers the [Sage](https://github.com/xch-dev/sage) wallet) or the wallet RPC. The simulator quickstart covers the full lifecycle. |
 | **Write a custom ChiaLisp puzzle** | **1–3 days** | Learn CLVM fundamentals (chialisp.com), understand conditions and currying, test on the simulator. Expect the coinset model to feel unfamiliar if coming from EVM — budget time for the mental-model shift. |
