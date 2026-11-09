@@ -16,12 +16,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:1
 a{color:var(--accent)}
 
 /* Header */
-.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg2);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
 .header h1{font-size:1.2rem;display:flex;align-items:center;gap:8px;color:var(--accent)}
 .header h1 span{font-size:1.4rem}
+.header-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .network-sel{display:flex;align-items:center;gap:8px}
 .network-sel label{color:var(--text-dim);font-size:.85rem}
 .network-sel select{background:var(--surface);color:var(--accent);border:1px solid var(--accent);padding:4px 8px;border-radius:4px;font-family:var(--mono);font-size:.85rem;cursor:pointer}
+.mode-toggle{display:flex;gap:4px}
+.mode-btn{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:4px;cursor:pointer;color:var(--text-dim);font-size:.8rem;font-family:var(--mono);transition:all .15s}
+.mode-btn.active{background:var(--bg3);color:var(--accent);border-color:var(--accent)}
+.mode-btn:hover{opacity:.85}
 
 /* Main layout */
 .main{display:flex;flex:1;overflow:hidden}
@@ -70,6 +75,40 @@ textarea#params{min-height:140px;line-height:1.4}
 .util-panel .field input{width:100%}
 .util-result{background:var(--surface);padding:8px;border-radius:4px;font-size:.85rem;word-break:break-all;min-height:1.5em}
 
+/* Walkthrough styles */
+.wt-hidden{display:none!important}
+.wt-picker{display:flex;flex-direction:column;gap:12px}
+.wt-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;transition:all .15s}
+.wt-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.wt-card h4{color:var(--accent);font-size:.95rem;margin-bottom:4px}
+.wt-card p{color:var(--text-dim);font-size:.8rem;line-height:1.4}
+
+.wt-stepper{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
+.wt-step{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:4px;cursor:pointer;transition:background .15s;font-size:.85rem}
+.wt-step:hover{background:var(--surface)}
+.wt-step.active{background:var(--bg3);border:1px solid var(--accent)}
+.wt-step.done{opacity:.7}
+.wt-step-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;background:var(--surface);color:var(--text-dim);border:1px solid var(--border)}
+.wt-step.active .wt-step-num{background:var(--accent);color:#1a1a2e;border-color:var(--accent)}
+.wt-step.done .wt-step-num{background:var(--success);color:#1a1a2e;border-color:var(--success)}
+.wt-step-label{line-height:22px}
+.wt-step-type{color:var(--text-dim);font-size:.7rem;margin-left:auto;flex-shrink:0}
+
+.wt-context{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:10px;margin-bottom:8px;font-size:.8rem;color:var(--text-dim);line-height:1.4}
+.wt-context strong{color:var(--accent)}
+
+.wt-summary{background:var(--bg3);border:1px solid var(--accent);border-radius:6px;padding:16px;margin-top:12px}
+.wt-summary h3{color:var(--accent);font-size:1rem;margin-bottom:8px}
+.wt-summary .value{font-size:1.1rem;color:var(--text);margin-bottom:4px}
+.wt-summary .detail{color:var(--text-dim);font-size:.8rem}
+
+.wt-nav{display:flex;gap:8px;margin-top:8px}
+
+.wt-lineage-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px}
+.wt-lineage-table th{text-align:left;padding:6px 8px;color:var(--accent);border-bottom:1px solid var(--border)}
+.wt-lineage-table td{padding:6px 8px;border-bottom:1px solid var(--border);word-break:break-all}
+.wt-lineage-table tr:last-child td{border-bottom:none}
+
 /* Footer */
 .footer{padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);font-size:.75rem;color:var(--text-dim);text-align:center;line-height:1.6}
 
@@ -85,66 +124,100 @@ textarea#params{min-height:140px;line-height:1.4}
 
 <div class="header">
   <h1><span>🌿</span> Chia RPC Playground</h1>
-  <div class="network-sel">
-    <label>Network:</label>
-    <select id="network">
-      <option value="https://api.coinset.org/">Mainnet</option>
-      <option value="https://testnet11.api.coinset.org/">Testnet11</option>
-    </select>
-    <span id="network-badge" style="padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700;background:var(--accent);color:#1a1a2e">MAINNET</span>
+  <div class="header-controls">
+    <div class="mode-toggle">
+      <div class="mode-btn active" onclick="setMode('explore')" id="mode-explore">Explore</div>
+      <div class="mode-btn" onclick="setMode('walkthroughs')" id="mode-walkthroughs">Walkthroughs</div>
+    </div>
+    <div class="network-sel">
+      <label>Network:</label>
+      <select id="network">
+        <option value="https://api.coinset.org/">Mainnet</option>
+        <option value="https://testnet11.api.coinset.org/">Testnet11</option>
+      </select>
+      <span id="network-badge" style="padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700;background:var(--accent);color:#1a1a2e">MAINNET</span>
+    </div>
   </div>
 </div>
 
 <div class="main">
   <div class="left">
-    <div class="field">
-      <label>Method</label>
-      <select id="method"></select>
-      <div class="method-desc" id="method-desc"></div>
-    </div>
-    <div class="field">
-      <label>Parameters (JSON)</label>
-      <textarea id="params" spellcheck="false"></textarea>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="run-btn" onclick="runRpc()">▶ Run</button>
-      <button class="btn btn-secondary" onclick="resetParams()">Reset</button>
-      <span class="countdown" id="countdown"></span>
+    <!-- Explore mode (default) -->
+    <div id="explore-panel">
+      <div class="field">
+        <label>Method</label>
+        <select id="method"></select>
+        <div class="method-desc" id="method-desc"></div>
+      </div>
+      <div class="field">
+        <label>Parameters (JSON)</label>
+        <textarea id="params" spellcheck="false"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="run-btn" onclick="runRpc()">▶ Run</button>
+        <button class="btn btn-secondary" onclick="resetParams()">Reset</button>
+        <span class="countdown" id="countdown"></span>
+      </div>
+
+      <div class="utils-section">
+        <h3>─── Utilities ───</h3>
+        <div class="util-tabs">
+          <div class="util-tab active" onclick="showUtil('encode',this)">Encode</div>
+          <div class="util-tab" onclick="showUtil('decode',this)">Decode</div>
+          <div class="util-tab" onclick="showUtil('coinid',this)">Coin ID</div>
+        </div>
+        <div class="util-panel active" id="util-encode">
+          <div class="field"><label>Puzzle Hash (0x...)</label><input id="enc-ph" placeholder="0xad704c74..."></div>
+          <div class="field"><label>Prefix</label>
+            <select id="enc-prefix"><option value="xch">xch (mainnet)</option><option value="txch">txch (testnet)</option></select>
+          </div>
+          <button class="btn btn-primary btn-small" onclick="doEncode()">Encode Address</button>
+          <div class="util-result" id="enc-result"></div>
+        </div>
+        <div class="util-panel" id="util-decode">
+          <div class="field"><label>Bech32m Address</label><input id="dec-addr" placeholder="xch1..."></div>
+          <button class="btn btn-primary btn-small" onclick="doDecode()">Decode Address</button>
+          <div class="util-result" id="dec-result"></div>
+        </div>
+        <div class="util-panel" id="util-coinid">
+          <div class="field"><label>Parent Coin Info (0x...)</label><input id="cid-parent" placeholder="0x..."></div>
+          <div class="field"><label>Puzzle Hash (0x...)</label><input id="cid-ph" placeholder="0x..."></div>
+          <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="text" inputmode="numeric" placeholder="1000000000000"></div>
+          <button class="btn btn-primary btn-small" onclick="doCoinId()">Compute Coin ID</button>
+          <div class="util-result" id="cid-result"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="utils-section">
-      <h3>─── Utilities ───</h3>
-      <div class="util-tabs">
-        <div class="util-tab active" onclick="showUtil('encode',this)">Encode</div>
-        <div class="util-tab" onclick="showUtil('decode',this)">Decode</div>
-        <div class="util-tab" onclick="showUtil('coinid',this)">Coin ID</div>
-      </div>
-      <div class="util-panel active" id="util-encode">
-        <div class="field"><label>Puzzle Hash (0x...)</label><input id="enc-ph" placeholder="0xad704c74..."></div>
-        <div class="field"><label>Prefix</label>
-          <select id="enc-prefix"><option value="xch">xch (mainnet)</option><option value="txch">txch (testnet)</option></select>
+    <!-- Walkthrough mode -->
+    <div id="wt-panel" class="wt-hidden">
+      <div id="wt-picker" class="wt-picker"></div>
+      <div id="wt-active" class="wt-hidden">
+        <div class="btn-row" style="margin-bottom:12px">
+          <button class="btn btn-secondary btn-small" onclick="exitWalkthrough()">← Back to list</button>
         </div>
-        <button class="btn btn-primary btn-small" onclick="doEncode()">Encode Address</button>
-        <div class="util-result" id="enc-result"></div>
-      </div>
-      <div class="util-panel" id="util-decode">
-        <div class="field"><label>Bech32m Address</label><input id="dec-addr" placeholder="xch1..."></div>
-        <button class="btn btn-primary btn-small" onclick="doDecode()">Decode Address</button>
-        <div class="util-result" id="dec-result"></div>
-      </div>
-      <div class="util-panel" id="util-coinid">
-        <div class="field"><label>Parent Coin Info (0x...)</label><input id="cid-parent" placeholder="0x..."></div>
-        <div class="field"><label>Puzzle Hash (0x...)</label><input id="cid-ph" placeholder="0x..."></div>
-        <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="text" inputmode="numeric" placeholder="1000000000000"></div>
-        <button class="btn btn-primary btn-small" onclick="doCoinId()">Compute Coin ID</button>
-        <div class="util-result" id="cid-result"></div>
+        <div id="wt-stepper" class="wt-stepper"></div>
+        <div id="wt-context" class="wt-context"></div>
+        <div class="field">
+          <label id="wt-step-title">Step</label>
+          <textarea id="wt-params" spellcheck="false" style="min-height:100px;line-height:1.4;background:var(--surface);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:4px;font-family:var(--mono);font-size:.9rem;resize:vertical"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="wt-run-btn" onclick="runWtStep()">▶ Run Step</button>
+          <span class="countdown" id="wt-countdown"></span>
+        </div>
+        <div class="wt-nav" id="wt-nav">
+          <button class="btn btn-secondary btn-small" id="wt-prev-btn" onclick="wtPrevStep()" disabled>← Previous</button>
+          <button class="btn btn-primary btn-small" id="wt-next-btn" onclick="wtNextStep()" disabled>Next Step →</button>
+        </div>
+        <div id="wt-summary"></div>
       </div>
     </div>
   </div>
 
   <div class="right">
     <div class="resp-header">
-      <h2>Response</h2>
+      <h2 id="resp-title">Response</h2>
       <div>
         <span class="resp-status" id="resp-status"></span>
       </div>
@@ -181,25 +254,161 @@ const METHODS = [
   {cat:"Blocks", name:"get_unfinished_block_headers", params:{}, desc:"Get headers of unfinished blocks"},
   {cat:"Blocks", name:"get_block_count_metrics", params:{}, desc:"Get block count metrics"},
 
-  {cat:"Coins", name:"get_coin_record_by_name", params:{name:"0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"}, desc:"Get a coin record by coin ID"},
-  {cat:"Coins", name:"get_coin_records_by_names", params:{names:["0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"]}, desc:"Get coin records by multiple coin IDs"},
-  {cat:"Coins", name:"get_coin_records_by_puzzle_hash", params:{puzzle_hash:"0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70",include_spent_coins:false}, desc:"Get coins by puzzle hash"},
-  {cat:"Coins", name:"get_coin_records_by_puzzle_hashes", params:{puzzle_hashes:["0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70"],include_spent_coins:false}, desc:"Get coins by multiple puzzle hashes"},
-  {cat:"Coins", name:"get_coin_records_by_hint", params:{hint:"0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70",include_spent_coins:false}, desc:"Get coins by hint"},
-  {cat:"Coins", name:"get_coin_records_by_parent_ids", params:{parent_ids:["0x5978b7210a25a3962a2df921b210536a703647ad3969580e4cf021482ee4c54b"]}, desc:"Get coins by parent coin IDs"},
-  {cat:"Coins", name:"get_puzzle_and_solution", params:{coin_id:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04",height:8999005}, desc:"Get puzzle and solution for a spent coin"},
+  {cat:"Coins", name:"get_coin_record_by_name", params:{name:"0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91"}, desc:"Get a coin record by coin ID"},
+  {cat:"Coins", name:"get_coin_records_by_names", params:{names:["0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91"]}, desc:"Get coin records by multiple coin IDs"},
+  {cat:"Coins", name:"get_coin_records_by_puzzle_hash", params:{puzzle_hash:"0xad704c74ad4ae0eec561d13ec418ff9463e56f9aec5f283a0bb48d18c8d9b0af",include_spent_coins:false}, desc:"Get coins by puzzle hash"},
+  {cat:"Coins", name:"get_coin_records_by_puzzle_hashes", params:{puzzle_hashes:["0xad704c74ad4ae0eec561d13ec418ff9463e56f9aec5f283a0bb48d18c8d9b0af"],include_spent_coins:false}, desc:"Get coins by multiple puzzle hashes"},
+  {cat:"Coins", name:"get_coin_records_by_hint", params:{hint:"0xad704c74ad4ae0eec561d13ec418ff9463e56f9aec5f283a0bb48d18c8d9b0af",include_spent_coins:false}, desc:"Get coins by hint"},
+  {cat:"Coins", name:"get_coin_records_by_parent_ids", params:{parent_ids:["0xccd5bb71183532bff220ba46c268991a00000000000000000000000000895056"]}, desc:"Get coins by parent coin IDs"},
+  {cat:"Coins", name:"get_puzzle_and_solution", params:{coin_id:"0x56deb96fd3122b7d84b6102b5fb8c28ffde4e4ea70481e3f4d811ac17f2611dc",height:8999003}, desc:"Get puzzle and solution for a spent coin"},
 
-  {cat:"Coinset Extended ⚡", name:"get_puzzle_and_solution_with_conditions", params:{coin_id:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04",height:8999005}, desc:"Puzzle, solution & parsed conditions (Coinset-only)", coinsetOnly:true},
-  {cat:"Coinset Extended ⚡", name:"get_memos_by_coin_name", params:{name:"0xe1ae66ba70796a1a5486e4b7ef2f1060c982728c1e850c063c72c03f6dc66e04"}, desc:"Get memos attached to a coin (Coinset-only)", coinsetOnly:true},
-  {cat:"Coinset Extended ⚡", name:"get_coin_records_by_hints", params:{hints:["0xad704c74ad4ae0eec5adff7a7e2aa3488da7b0a10f86e697a3da4c8e75709e70"],include_spent_coins:false}, desc:"Get coins by multiple hints (Coinset-only)", coinsetOnly:true},
+  {cat:"Coinset Extended ⚡", name:"get_puzzle_and_solution_with_conditions", params:{coin_id:"0x56deb96fd3122b7d84b6102b5fb8c28ffde4e4ea70481e3f4d811ac17f2611dc",height:8999003}, desc:"Puzzle, solution & parsed conditions (Coinset-only)", coinsetOnly:true},
+  {cat:"Coinset Extended ⚡", name:"get_memos_by_coin_name", params:{name:"0x56deb96fd3122b7d84b6102b5fb8c28ffde4e4ea70481e3f4d811ac17f2611dc"}, desc:"Get memos attached to a coin (Coinset-only)", coinsetOnly:true},
+  {cat:"Coinset Extended ⚡", name:"get_coin_records_by_hints", params:{hints:["0xad704c74ad4ae0eec561d13ec418ff9463e56f9aec5f283a0bb48d18c8d9b0af"],include_spent_coins:false}, desc:"Get coins by multiple hints (Coinset-only)", coinsetOnly:true},
 
   {cat:"Mempool", name:"get_all_mempool_tx_ids", params:{}, desc:"Get all transaction IDs in mempool"},
   {cat:"Mempool", name:"get_all_mempool_items", params:{}, desc:"Get all mempool items (large response)"},
   {cat:"Mempool", name:"get_mempool_item_by_tx_id", params:{tx_id:""}, desc:"Get a mempool item by transaction ID (needs live tx ID)"},
-  {cat:"Mempool", name:"get_mempool_items_by_coin_name", params:{coin_name:"0x1d546a6d9ac085a14fc23205d3550cd3497693ff25bd1c3015422381c2ec5566"}, desc:"Get mempool items involving a coin"},
+  {cat:"Mempool", name:"get_mempool_items_by_coin_name", params:{coin_name:"0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91"}, desc:"Get mempool items involving a coin"},
   {cat:"Mempool", name:"get_fee_estimate", params:{target_times:[60,120,300],cost:11000000}, desc:"Estimate fees for target confirmation times"},
 
   {cat:"Network", name:"get_network_space", params:{newer_block_header_hash:"0x6a9ad79186e95fee2fc215fafe2d0cddf6bf8bd22fad1a88986225b9d199e2de",older_block_header_hash:"0x2fe4a9a2b8c5ddca8a83f24eaddffb9c7f048a0e651cfa3628127f0b05199f63"}, desc:"Estimate network space between two blocks"},
+];
+
+// ─── Walkthrough Definitions ───
+const WALKTHROUGHS = [
+  {
+    id: 'check_balance',
+    title: '💰 Check a Balance',
+    description: 'Convert a Chia address to its puzzle hash, find all unspent coins, and compute the total balance.',
+    steps: [
+      {
+        label: 'Decode the address',
+        type: 'utility',
+        tool: 'address_decode',
+        description: 'Convert a bech32m address (xch1...) into a puzzle hash. The puzzle hash is what the blockchain uses to identify coin ownership.',
+        prefill: { address: 'xch144cyca9dftswa3tp6ylvgx8lj3372mu6a30jswstkjx33jxekzhs5a995k' },
+        extract: { puzzleHash: 'puzzle_hash' }
+      },
+      {
+        label: 'Find unspent coins',
+        type: 'rpc',
+        method: 'get_coin_records_by_puzzle_hash',
+        description: 'Query the blockchain for all unspent coins controlled by this puzzle hash.',
+        prefill: { puzzle_hash: '{{puzzleHash}}', include_spent_coins: false },
+        extract: { coins: 'coin_records' }
+      },
+      {
+        label: 'Sum the balance',
+        type: 'compute',
+        fn: 'sum_balance',
+        description: 'Add up all coin amounts. Each coin holds some amount of mojos (1 XCH = 1,000,000,000,000 mojos).'
+      }
+    ]
+  },
+  {
+    id: 'trace_coin',
+    title: '🔗 Trace a Coin\'s History',
+    description: 'Start from a coin and follow its parent chain to see where the value came from.',
+    steps: [
+      {
+        label: 'Look up the coin',
+        type: 'rpc',
+        method: 'get_coin_record_by_name',
+        description: 'Fetch a coin record by its unique coin ID. This returns the coin\'s parent, puzzle hash, amount, and spend status.',
+        prefill: { name: '0x56deb96fd3122b7d84b6102b5fb8c28ffde4e4ea70481e3f4d811ac17f2611dc' },
+        extract: { parentId: 'coin_record.coin.parent_coin_info', coinAmount: 'coin_record.coin.amount', coinHeight: 'coin_record.confirmed_block_index', coinSpent: 'coin_record.spent' }
+      },
+      {
+        label: 'Look up the parent',
+        type: 'rpc',
+        method: 'get_coin_record_by_name',
+        description: 'Fetch the parent coin to see where this coin\'s value originated.',
+        prefill: { name: '{{parentId}}' },
+        extract: { grandparentId: 'coin_record.coin.parent_coin_info', parentAmount: 'coin_record.coin.amount', parentHeight: 'coin_record.confirmed_block_index' }
+      },
+      {
+        label: 'Look up the grandparent',
+        type: 'rpc',
+        method: 'get_coin_record_by_name',
+        description: 'Go one more level up the chain. You can keep going until you reach a coinbase coin (farming reward).',
+        prefill: { name: '{{grandparentId}}' },
+        extract: { greatGrandparentId: 'coin_record.coin.parent_coin_info', grandparentAmount: 'coin_record.coin.amount', grandparentHeight: 'coin_record.confirmed_block_index' }
+      },
+      {
+        label: 'View the lineage',
+        type: 'compute',
+        fn: 'show_lineage',
+        description: 'See the chain of coins traced so far, from grandparent to child.'
+      }
+    ]
+  },
+  {
+    id: 'explore_block',
+    title: '🧱 Explore a Block',
+    description: 'Get the current blockchain state, pick a recent block, and see what coins moved in it.',
+    steps: [
+      {
+        label: 'Get blockchain state',
+        type: 'rpc',
+        method: 'get_blockchain_state',
+        description: 'Query the current state of the blockchain, including the peak (latest) block height.',
+        prefill: {},
+        extract: { peakHeight: 'blockchain_state.peak.height', peakHash: 'blockchain_state.peak.header_hash' }
+      },
+      {
+        label: 'Get a block record',
+        type: 'rpc',
+        method: 'get_block_record_by_height',
+        description: 'Fetch the block record at a specific height. This shows the block\'s header hash, farmer, fees, and whether it\'s a transaction block.',
+        prefill: { height: 8999003 },
+        extract: { blockHash: 'block_record.header_hash', blockFees: 'block_record.fees', blockFarmer: 'block_record.farmer_puzzle_hash' }
+      },
+      {
+        label: 'See coin movements',
+        type: 'rpc',
+        method: 'get_additions_and_removals',
+        description: 'Get all coins created (additions) and destroyed (removals) in this block. This is the core of how value moves on Chia.',
+        prefill: { header_hash: '{{blockHash}}' },
+        extract: { additions: 'additions', removals: 'removals' }
+      },
+      {
+        label: 'Summarize the block',
+        type: 'compute',
+        fn: 'summarize_block',
+        description: 'See a summary of the block\'s activity.'
+      }
+    ]
+  },
+  {
+    id: 'verify_coin_id',
+    title: '🔐 Verify a Coin ID',
+    description: 'Fetch a coin and independently recompute its ID from its components to verify it matches.',
+    steps: [
+      {
+        label: 'Fetch the coin',
+        type: 'rpc',
+        method: 'get_coin_record_by_name',
+        description: 'Look up a coin by its ID. We\'ll use the parent_coin_info, puzzle_hash, and amount to recompute the ID.',
+        prefill: { name: '0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91' },
+        extract: { parent: 'coin_record.coin.parent_coin_info', ph: 'coin_record.coin.puzzle_hash', amount: 'coin_record.coin.amount' }
+      },
+      {
+        label: 'Recompute the coin ID',
+        type: 'utility',
+        tool: 'coin_id',
+        description: 'Compute SHA256(parent_coin_info + puzzle_hash + amount). This is how Chia derives coin IDs — no separate ID field exists, every coin\'s identity is a hash of its components.',
+        prefill: { parent: '{{parent}}', puzzle_hash: '{{ph}}', amount: '{{amount}}' },
+        extract: { computedId: 'coin_id' }
+      },
+      {
+        label: 'Compare',
+        type: 'compute',
+        fn: 'verify_match',
+        description: 'Check if the computed coin ID matches the original. If they match, the coin data is authentic.'
+      }
+    ]
+  }
 ];
 
 // ─── Populate dropdown ───
@@ -252,15 +461,14 @@ function canRequest() {
   const now = Date.now();
   const elapsed = now - lastReqTime;
   if (elapsed < RATE_LIMIT_MS) {
-    const remaining = Math.ceil((RATE_LIMIT_MS - elapsed) / 1000);
     showCountdown(RATE_LIMIT_MS - elapsed);
     return false;
   }
   return true;
 }
 
-function showCountdown(ms) {
-  const cd = document.getElementById('countdown');
+function showCountdown(ms, elementId) {
+  const cd = document.getElementById(elementId || 'countdown');
   const end = Date.now() + ms;
   if (countdownInterval) clearInterval(countdownInterval);
   const tick = () => {
@@ -276,12 +484,55 @@ function showCountdown(ms) {
 let lastResponseText = '';
 let lastCurlCmd = '';
 
-// ─── RPC execution ───
+// ─── RPC execution (shared) ───
+async function executeRpc(method, params) {
+  const base = networkSel.value;
+  const url = base + method;
+  const body = JSON.stringify(params);
+  const curlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${body}'`;
+
+  const startTime = performance.now();
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: body
+  });
+  const elapsed = Math.round(performance.now() - startTime);
+  const text = await resp.text();
+  const sizeKB = (new TextEncoder().encode(text).length / 1024).toFixed(1);
+
+  return { resp, text, elapsed, sizeKB, curlCmd, ok: resp.ok, status: resp.status, statusText: resp.statusText };
+}
+
+function displayResponse(result, title) {
+  const statusEl = document.getElementById('resp-status');
+  statusEl.textContent = `${result.status} ${result.statusText} · ${result.elapsed}ms · ${result.sizeKB} KB`;
+  statusEl.className = 'resp-status ' + (result.ok ? 'ok' : 'err');
+  if (title) document.getElementById('resp-title').textContent = title;
+
+  const MAX_SIZE = 100 * 1024;
+  let display = result.text;
+  if (result.text.length > MAX_SIZE) {
+    display = result.text.substring(0, MAX_SIZE);
+    document.getElementById('resp-truncated').textContent = `⚠️ Response truncated to 100KB (full response was ${result.sizeKB} KB)`;
+  } else {
+    document.getElementById('resp-truncated').textContent = '';
+  }
+
+  try {
+    lastResponseText = JSON.stringify(JSON.parse(display), null, 2);
+  } catch {
+    lastResponseText = display;
+  }
+  document.getElementById('resp-body').textContent = lastResponseText;
+  lastCurlCmd = result.curlCmd;
+  document.getElementById('curl-box').style.display = 'none';
+}
+
+// ─── Explore mode RPC execution ───
 async function runRpc() {
   if (!canRequest()) return;
   const m = getMethod();
-  const base = networkSel.value;
-  const url = base + m.name;
   let params;
   try {
     params = JSON.parse(document.getElementById('params').value);
@@ -290,9 +541,6 @@ async function runRpc() {
     return;
   }
 
-  const body = JSON.stringify(params);
-  lastCurlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${body}'`;
-
   const runBtn = document.getElementById('run-btn');
   runBtn.disabled = true;
   runBtn.textContent = '⏳ Running...';
@@ -300,44 +548,21 @@ async function runRpc() {
   document.getElementById('resp-status').textContent = '';
   document.getElementById('resp-truncated').textContent = '';
   document.getElementById('curl-box').style.display = 'none';
+  document.getElementById('resp-title').textContent = 'Response';
 
   lastReqTime = Date.now();
-  const startTime = performance.now();
 
   try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: body
-    });
-    const elapsed = Math.round(performance.now() - startTime);
-    const text = await resp.text();
-    const sizeKB = (new TextEncoder().encode(text).length / 1024).toFixed(1);
-    const fullSizeKB = parseFloat(sizeKB);
-
-    const statusEl = document.getElementById('resp-status');
-    statusEl.textContent = `${resp.status} ${resp.statusText} · ${elapsed}ms · ${sizeKB} KB`;
-    statusEl.className = 'resp-status ' + (resp.ok ? 'ok' : 'err');
-
-    const MAX_SIZE = 100 * 1024; // 100KB
-    let display = text;
-    if (text.length > MAX_SIZE) {
-      display = text.substring(0, MAX_SIZE);
-      document.getElementById('resp-truncated').textContent = `⚠️ Response truncated to 100KB (full response was ${fullSizeKB} KB)`;
-    }
-
-    try {
-      lastResponseText = JSON.stringify(JSON.parse(display), null, 2);
-    } catch {
-      lastResponseText = display;
-    }
-    document.getElementById('resp-body').textContent = lastResponseText;
+    const result = await executeRpc(m.name, params);
+    displayResponse(result);
   } catch(err) {
-    const elapsed = Math.round(performance.now() - startTime);
     const statusEl = document.getElementById('resp-status');
-    statusEl.textContent = `Error · ${elapsed}ms`;
+    statusEl.textContent = 'Error';
     statusEl.className = 'resp-status err';
     lastResponseText = '';
+    const base = networkSel.value;
+    const body = JSON.stringify(params);
+    lastCurlCmd = `curl -s -X POST ${base}${m.name} -H "Content-Type: application/json" -d '${body}'`;
     document.getElementById('resp-body').innerHTML =
       `<span style="color:var(--danger)">Direct API access unavailable. Use this curl command instead:</span>\n\n` +
       `<code>${escHtml(lastCurlCmd)}</code>`;
@@ -365,7 +590,7 @@ function copyResponse() {
 }
 
 function showCurl() {
-  {
+  if (currentMode === 'explore') {
     const m = getMethod();
     const base = networkSel.value;
     const url = base + m.name;
@@ -500,41 +725,43 @@ async function doCoinId() {
   try {
     if (parent.length !== 64) throw new Error('Parent coin info must be 32 bytes');
     if (ph.length !== 64) throw new Error('Puzzle hash must be 32 bytes');
-    const amtBig = BigInt(amount);
-    if (amtBig < 0n) throw new Error('Amount must be non-negative');
-
-    // Encode amount as big-endian bytes, minimum 1 byte
-    let amtHex = amtBig.toString(16);
-    if (amtHex.length % 2) amtHex = '0' + amtHex;
-    // CLVM int encoding: if high bit set, no padding needed for positive since we concat raw
-    // Actually for coin ID: it's SHA256(parent + puzzle_hash + int_to_bytes(amount))
-    // int_to_bytes uses big-endian with minimum bytes, but amount is always positive in coins
-    // and uses (amount).to_bytes((amount.bit_length() + 8) >> 3, 'big') in Python
-    const amtBits = amtBig === 0n ? 0 : amtBig.toString(2).length;
-    const amtByteLen = amtBig === 0n ? 0 : ((amtBits + 8) >> 3);
-    let amtBytes;
-    if (amtByteLen === 0) {
-      amtBytes = new Uint8Array(0);
-    } else {
-      amtHex = amtBig.toString(16).padStart(amtByteLen * 2, '0');
-      amtBytes = new Uint8Array(amtByteLen);
-      for (let i = 0; i < amtByteLen; i++) amtBytes[i] = parseInt(amtHex.substr(i * 2, 2), 16);
-    }
-
-    const parentBytes = hexToBytes(parent);
-    const phBytes = hexToBytes(ph);
-    const combined = new Uint8Array(32 + 32 + amtBytes.length);
-    combined.set(parentBytes, 0);
-    combined.set(phBytes, 32);
-    combined.set(amtBytes, 64);
-
-    const hashBuf = await crypto.subtle.digest('SHA-256', combined);
-    const hashArr = new Uint8Array(hashBuf);
-    const coinId = '0x' + Array.from(hashArr).map(b => b.toString(16).padStart(2, '0')).join('');
+    const coinId = await computeCoinId(parent, ph, amount);
     document.getElementById('cid-result').textContent = coinId;
   } catch(e) {
     document.getElementById('cid-result').innerHTML = `<span style="color:var(--danger)">${escHtml(e.message)}</span>`;
   }
+}
+
+async function computeCoinId(parentHex, phHex, amountStr) {
+  const parent = parentHex.replace(/^0x/, '');
+  const ph = phHex.replace(/^0x/, '');
+  if (parent.length !== 64) throw new Error('Parent coin info must be 32 bytes');
+  if (ph.length !== 64) throw new Error('Puzzle hash must be 32 bytes');
+
+  const amtBig = BigInt(amountStr);
+  if (amtBig < 0n) throw new Error('Amount must be non-negative');
+
+  const amtBits = amtBig === 0n ? 0 : amtBig.toString(2).length;
+  const amtByteLen = amtBig === 0n ? 0 : ((amtBits + 8) >> 3);
+  let amtBytes;
+  if (amtByteLen === 0) {
+    amtBytes = new Uint8Array(0);
+  } else {
+    const amtHex = amtBig.toString(16).padStart(amtByteLen * 2, '0');
+    amtBytes = new Uint8Array(amtByteLen);
+    for (let i = 0; i < amtByteLen; i++) amtBytes[i] = parseInt(amtHex.substr(i * 2, 2), 16);
+  }
+
+  const parentBytes = hexToBytes(parent);
+  const phBytes = hexToBytes(ph);
+  const combined = new Uint8Array(32 + 32 + amtBytes.length);
+  combined.set(parentBytes, 0);
+  combined.set(phBytes, 32);
+  combined.set(amtBytes, 64);
+
+  const hashBuf = await crypto.subtle.digest('SHA-256', combined);
+  const hashArr = new Uint8Array(hashBuf);
+  return '0x' + Array.from(hashArr).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 function hexToBytes(hex) {
@@ -544,6 +771,394 @@ function hexToBytes(hex) {
   for (let i = 0; i < hex.length; i += 2) bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
   return bytes;
 }
+
+// ─── Mode switching ───
+let currentMode = 'explore';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('mode-explore').classList.toggle('active', mode === 'explore');
+  document.getElementById('mode-walkthroughs').classList.toggle('active', mode === 'walkthroughs');
+  document.getElementById('explore-panel').classList.toggle('wt-hidden', mode !== 'explore');
+  document.getElementById('wt-panel').classList.toggle('wt-hidden', mode !== 'walkthroughs');
+
+  if (mode === 'walkthroughs') {
+    renderWtPicker();
+    document.getElementById('resp-body').textContent = 'Select a walkthrough to begin.';
+    document.getElementById('resp-status').textContent = '';
+    document.getElementById('resp-title').textContent = 'Response';
+    document.getElementById('resp-truncated').textContent = '';
+    document.getElementById('curl-box').style.display = 'none';
+  } else {
+    document.getElementById('resp-title').textContent = 'Response';
+  }
+}
+
+// ─── Walkthrough Engine ───
+let wtState = null; // { walkthrough, currentStep, extractedValues, stepResults }
+
+function renderWtPicker() {
+  const picker = document.getElementById('wt-picker');
+  picker.innerHTML = '';
+  picker.classList.remove('wt-hidden');
+  document.getElementById('wt-active').classList.add('wt-hidden');
+
+  WALKTHROUGHS.forEach(wt => {
+    const card = document.createElement('div');
+    card.className = 'wt-card';
+    card.innerHTML = `<h4>${escHtml(wt.title)}</h4><p>${escHtml(wt.description)}</p>`;
+    card.onclick = () => startWalkthrough(wt);
+    picker.appendChild(card);
+  });
+}
+
+function startWalkthrough(wt) {
+  wtState = {
+    walkthrough: wt,
+    currentStep: 0,
+    extractedValues: {},
+    stepResults: new Array(wt.steps.length).fill(null)
+  };
+
+  document.getElementById('wt-picker').classList.add('wt-hidden');
+  document.getElementById('wt-active').classList.remove('wt-hidden');
+  document.getElementById('wt-summary').innerHTML = '';
+
+  renderWtStepper();
+  activateWtStep(0);
+}
+
+function exitWalkthrough() {
+  wtState = null;
+  renderWtPicker();
+  document.getElementById('resp-body').textContent = 'Select a walkthrough to begin.';
+  document.getElementById('resp-status').textContent = '';
+  document.getElementById('resp-title').textContent = 'Response';
+  document.getElementById('resp-truncated').textContent = '';
+  document.getElementById('curl-box').style.display = 'none';
+}
+
+function renderWtStepper() {
+  const stepper = document.getElementById('wt-stepper');
+  stepper.innerHTML = '';
+  const wt = wtState.walkthrough;
+
+  wt.steps.forEach((step, i) => {
+    const div = document.createElement('div');
+    div.className = 'wt-step' + (i === wtState.currentStep ? ' active' : '') + (wtState.stepResults[i] !== null ? ' done' : '');
+    div.innerHTML = `
+      <div class="wt-step-num">${wtState.stepResults[i] !== null ? '✓' : (i + 1)}</div>
+      <div class="wt-step-label">${escHtml(step.label)}</div>
+      <div class="wt-step-type">${step.type === 'rpc' ? '🌐 RPC' : step.type === 'utility' ? '🔧 Local' : '📊 Compute'}</div>
+    `;
+    div.onclick = () => activateWtStep(i);
+    stepper.appendChild(div);
+  });
+}
+
+function interpolate(value, vars) {
+  if (typeof value === 'string') {
+    return value.replace(/\{\{(\w+)\}\}/g, (_, key) => {
+      const v = vars[key];
+      return v !== undefined ? v : `{{${key}}}`;
+    });
+  }
+  if (Array.isArray(value)) return value.map(v => interpolate(v, vars));
+  if (value && typeof value === 'object') {
+    const result = {};
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = interpolate(v, vars);
+    }
+    return result;
+  }
+  return value;
+}
+
+function activateWtStep(index) {
+  wtState.currentStep = index;
+  const step = wtState.walkthrough.steps[index];
+
+  renderWtStepper();
+
+  // Context
+  const ctx = document.getElementById('wt-context');
+  ctx.innerHTML = `<strong>Step ${index + 1} of ${wtState.walkthrough.steps.length}:</strong> ${escHtml(step.description)}`;
+
+  // Step title
+  document.getElementById('wt-step-title').textContent = step.label;
+
+  // Params
+  const paramsEl = document.getElementById('wt-params');
+  const runBtn = document.getElementById('wt-run-btn');
+
+  if (step.type === 'compute') {
+    paramsEl.value = '(computed from previous steps — click Run Step)';
+    paramsEl.disabled = true;
+    runBtn.textContent = '▶ Run Step';
+  } else if (step.type === 'utility') {
+    const prefill = interpolate(step.prefill, wtState.extractedValues);
+    paramsEl.value = JSON.stringify(prefill, null, 2);
+    paramsEl.disabled = false;
+    runBtn.textContent = '▶ Run Step';
+  } else {
+    const prefill = interpolate(step.prefill, wtState.extractedValues);
+    paramsEl.value = JSON.stringify(prefill, null, 2);
+    paramsEl.disabled = false;
+    runBtn.textContent = '▶ Run Step';
+  }
+
+  // Nav buttons
+  document.getElementById('wt-prev-btn').disabled = index === 0;
+  const isLast = index === wtState.walkthrough.steps.length - 1;
+  const nextBtn = document.getElementById('wt-next-btn');
+  nextBtn.disabled = wtState.stepResults[index] === null && step.type !== 'compute';
+  nextBtn.textContent = isLast ? 'Finish' : 'Next Step →';
+
+  // Show previous result if step already run
+  if (wtState.stepResults[index] !== null) {
+    document.getElementById('resp-title').textContent = `Step ${index + 1}: ${step.label}`;
+    document.getElementById('resp-body').textContent = wtState.stepResults[index];
+  }
+}
+
+function wtPrevStep() {
+  if (wtState.currentStep > 0) activateWtStep(wtState.currentStep - 1);
+}
+
+function wtNextStep() {
+  const next = wtState.currentStep + 1;
+  if (next < wtState.walkthrough.steps.length) {
+    activateWtStep(next);
+  }
+  // If at last step, do nothing (they can exit or review)
+}
+
+async function runWtStep() {
+  if (!canRequest() && wtState.walkthrough.steps[wtState.currentStep].type === 'rpc') return;
+
+  const step = wtState.walkthrough.steps[wtState.currentStep];
+  const runBtn = document.getElementById('wt-run-btn');
+  runBtn.disabled = true;
+  runBtn.textContent = '⏳ Running...';
+
+  try {
+    if (step.type === 'rpc') {
+      let params;
+      try {
+        params = JSON.parse(document.getElementById('wt-params').value);
+      } catch(e) {
+        showError('Invalid JSON: ' + e.message);
+        return;
+      }
+
+      lastReqTime = Date.now();
+      const result = await executeRpc(step.method, params);
+      displayResponse(result, `Step ${wtState.currentStep + 1}: ${step.label}`);
+
+      // Extract values
+      if (step.extract && result.ok) {
+        const data = JSON.parse(result.text);
+        for (const [varName, path] of Object.entries(step.extract)) {
+          wtState.extractedValues[varName] = extractPath(data, path);
+        }
+      }
+
+      wtState.stepResults[wtState.currentStep] = lastResponseText;
+
+    } else if (step.type === 'utility') {
+      let input;
+      try {
+        input = JSON.parse(document.getElementById('wt-params').value);
+      } catch(e) {
+        showError('Invalid JSON: ' + e.message);
+        return;
+      }
+
+      let resultText = '';
+      if (step.tool === 'address_decode') {
+        const { hrp, puzzleHash } = addressToPuzzleHash(input.address);
+        resultText = JSON.stringify({ prefix: hrp, puzzle_hash: puzzleHash }, null, 2);
+        if (step.extract) {
+          for (const [varName, path] of Object.entries(step.extract)) {
+            if (path === 'puzzle_hash') wtState.extractedValues[varName] = puzzleHash;
+          }
+        }
+      } else if (step.tool === 'coin_id') {
+        const parent = String(input.parent || '');
+        const ph = String(input.puzzle_hash || '');
+        const amount = String(input.amount || '0');
+        const coinId = await computeCoinId(parent, ph, amount);
+        resultText = JSON.stringify({ coin_id: coinId, components: { parent_coin_info: parent, puzzle_hash: ph, amount: amount }, algorithm: 'SHA256(parent + puzzle_hash + int_to_bytes(amount))' }, null, 2);
+        if (step.extract) {
+          for (const [varName, path] of Object.entries(step.extract)) {
+            if (path === 'coin_id') wtState.extractedValues[varName] = coinId;
+          }
+        }
+      }
+
+      lastResponseText = resultText;
+      document.getElementById('resp-body').textContent = resultText;
+      document.getElementById('resp-status').textContent = 'Local · 0ms';
+      document.getElementById('resp-status').className = 'resp-status ok';
+      document.getElementById('resp-title').textContent = `Step ${wtState.currentStep + 1}: ${step.label}`;
+      document.getElementById('resp-truncated').textContent = '';
+
+      wtState.stepResults[wtState.currentStep] = resultText;
+
+    } else if (step.type === 'compute') {
+      const resultText = runCompute(step.fn);
+      lastResponseText = resultText;
+      document.getElementById('resp-body').innerHTML = resultText;
+      document.getElementById('resp-status').textContent = 'Computed · 0ms';
+      document.getElementById('resp-status').className = 'resp-status ok';
+      document.getElementById('resp-title').textContent = `Step ${wtState.currentStep + 1}: ${step.label}`;
+      document.getElementById('resp-truncated').textContent = '';
+
+      wtState.stepResults[wtState.currentStep] = resultText;
+    }
+
+    // Update stepper and nav
+    renderWtStepper();
+    document.getElementById('wt-next-btn').disabled = false;
+
+    // Show summary if this was the last step
+    if (wtState.currentStep === wtState.walkthrough.steps.length - 1) {
+      renderWtSummary();
+    }
+
+  } catch(err) {
+    showError(err.message);
+  } finally {
+    runBtn.disabled = false;
+    runBtn.textContent = '▶ Run Step';
+  }
+}
+
+function extractPath(obj, path) {
+  const parts = path.split('.');
+  let current = obj;
+  for (const part of parts) {
+    if (current === null || current === undefined) return undefined;
+    current = current[part];
+  }
+  return current;
+}
+
+// ─── Compute Functions ───
+function runCompute(fn) {
+  const v = wtState.extractedValues;
+
+  if (fn === 'sum_balance') {
+    const coins = v.coins;
+    if (!coins || !Array.isArray(coins)) return '<span style="color:var(--danger)">No coins found — run Step 2 first.</span>';
+
+    let total = 0n;
+    for (const rec of coins) {
+      total += BigInt(rec.coin.amount);
+    }
+    const xch = Number(total) / 1e12;
+    const coinCount = coins.length;
+
+    return `<div class="wt-summary">
+      <h3>💰 Balance Summary</h3>
+      <div class="value">${xch.toFixed(6)} XCH</div>
+      <div class="detail">${total.toLocaleString()} mojos across ${coinCount} coin${coinCount !== 1 ? 's' : ''}</div>
+      <div class="detail" style="margin-top:8px;color:var(--text-dim)">Each unspent coin is an independent UTXO. To spend XCH, one or more coins are consumed and new coins are created.</div>
+    </div>`;
+  }
+
+  if (fn === 'show_lineage') {
+    const rows = [];
+    // Grandparent
+    if (v.grandparentHeight) {
+      rows.push({ label: 'Grandparent', id: v.grandparentId || '?', height: v.grandparentHeight, amount: v.grandparentAmount });
+    }
+    // Parent
+    if (v.parentHeight) {
+      rows.push({ label: 'Parent', id: v.parentId || '?', height: v.parentHeight, amount: v.parentAmount });
+    }
+    // Original coin
+    if (v.coinHeight) {
+      rows.push({ label: 'Coin', id: document.getElementById('wt-params') ? '(original query)' : '?', height: v.coinHeight, amount: v.coinAmount, spent: v.coinSpent });
+    }
+
+    if (rows.length === 0) return '<span style="color:var(--danger)">No lineage data — run the previous steps first.</span>';
+
+    let html = `<div class="wt-summary"><h3>🔗 Coin Lineage</h3>
+      <table class="wt-lineage-table">
+        <tr><th>Level</th><th>Height</th><th>Amount</th><th>Amount (XCH)</th></tr>`;
+    for (const row of rows) {
+      const xch = row.amount ? (Number(row.amount) / 1e12).toFixed(6) : '—';
+      html += `<tr><td>${escHtml(row.label)}</td><td>${row.height}</td><td>${Number(row.amount).toLocaleString()} mojos</td><td>${xch}</td></tr>`;
+    }
+    html += `</table>
+      <div class="detail" style="margin-top:8px;color:var(--text-dim)">Each coin is created by spending its parent. You can keep tracing upward until you reach a coinbase (farming reward) coin.</div>
+    </div>`;
+    return html;
+  }
+
+  if (fn === 'summarize_block') {
+    const additions = v.additions;
+    const removals = v.removals;
+    const blockHash = v.blockHash;
+    const fees = v.blockFees;
+
+    if (!additions && !removals) return '<span style="color:var(--danger)">No block data — run the previous steps first.</span>';
+
+    const addCount = additions ? additions.length : 0;
+    const remCount = removals ? removals.length : 0;
+
+    let totalCreated = 0n;
+    let totalDestroyed = 0n;
+    if (additions) for (const r of additions) totalCreated += BigInt(r.coin.amount);
+    if (removals) for (const r of removals) totalDestroyed += BigInt(r.coin.amount);
+
+    let html = `<div class="wt-summary"><h3>🧱 Block Summary</h3>
+      <div class="detail">Header: ${blockHash ? escHtml(String(blockHash).substring(0, 20)) + '...' : '?'}</div>
+      <div class="detail">Fees: ${fees !== null && fees !== undefined ? fees + ' mojos' : 'None (non-transaction block or zero fees)'}</div>
+      <div class="value" style="margin-top:8px">${addCount} coin${addCount !== 1 ? 's' : ''} created · ${remCount} coin${remCount !== 1 ? 's' : ''} spent</div>
+      <div class="detail">${(Number(totalCreated) / 1e12).toFixed(6)} XCH created · ${(Number(totalDestroyed) / 1e12).toFixed(6)} XCH spent</div>
+      <div class="detail" style="margin-top:8px;color:var(--text-dim)">Additions include farming rewards (block reward + fees) and any transaction outputs. Removals are the coins that were spent.</div>
+    </div>`;
+    return html;
+  }
+
+  if (fn === 'verify_match') {
+    const originalId = '0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91';
+    const computedId = v.computedId;
+
+    if (!computedId) return '<span style="color:var(--danger)">No computed ID — run Step 2 first.</span>';
+
+    const match = computedId.toLowerCase() === originalId.toLowerCase();
+
+    return `<div class="wt-summary">
+      <h3>🔐 Verification Result</h3>
+      <div class="value" style="color:${match ? 'var(--success)' : 'var(--danger)'}">${match ? '✓ MATCH' : '✗ MISMATCH'}</div>
+      <div class="detail" style="margin-top:8px">
+        <div>Original ID: <span style="color:var(--text)">${escHtml(originalId)}</span></div>
+        <div>Computed ID: <span style="color:var(--text)">${escHtml(computedId)}</span></div>
+      </div>
+      <div class="detail" style="margin-top:8px;color:var(--text-dim)">${match
+        ? 'The coin ID is a deterministic hash of its three components. This means coin data cannot be tampered with — any change to parent, puzzle hash, or amount would produce a different ID.'
+        : 'The IDs don\'t match. This could mean the coin data was modified or the wrong coin was fetched.'
+      }</div>
+    </div>`;
+  }
+
+  return '<span style="color:var(--danger)">Unknown compute function: ' + escHtml(fn) + '</span>';
+}
+
+function renderWtSummary() {
+  // Summary is rendered inline by the compute step — nothing extra needed
+}
+
+// ─── Initialize walkthrough picker ───
+function initWtPicker() {
+  renderWtPicker();
+}
+
+// ─── On load ───
+initWtPicker();
 </script>
 </body>
 </html>
