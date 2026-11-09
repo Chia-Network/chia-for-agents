@@ -391,7 +391,7 @@ const WALKTHROUGHS = [
         method: 'get_coin_record_by_name',
         description: 'Look up a coin by its ID. We\'ll use the parent_coin_info, puzzle_hash, and amount to recompute the ID.',
         prefill: { name: '0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91' },
-        extract: { parent: 'coin_record.coin.parent_coin_info', ph: 'coin_record.coin.puzzle_hash', amount: 'coin_record.coin.amount' }
+        extract: { originalCoinId: '_input_name', parent: 'coin_record.coin.parent_coin_info', ph: 'coin_record.coin.puzzle_hash', amount: 'coin_record.coin.amount' }
       },
       {
         label: 'Recompute the coin ID',
@@ -457,11 +457,11 @@ let lastReqTime = 0;
 let countdownInterval = null;
 const RATE_LIMIT_MS = 1000;
 
-function canRequest() {
+function canRequest(countdownId) {
   const now = Date.now();
   const elapsed = now - lastReqTime;
   if (elapsed < RATE_LIMIT_MS) {
-    showCountdown(RATE_LIMIT_MS - elapsed);
+    showCountdown(RATE_LIMIT_MS - elapsed, countdownId);
     return false;
   }
   return true;
@@ -531,7 +531,7 @@ function displayResponse(result, title) {
 
 // ─── Explore mode RPC execution ───
 async function runRpc() {
-  if (!canRequest()) return;
+  if (!canRequest('countdown')) return;
   const m = getMethod();
   let params;
   try {
@@ -817,7 +817,8 @@ function startWalkthrough(wt) {
     walkthrough: wt,
     currentStep: 0,
     extractedValues: {},
-    stepResults: new Array(wt.steps.length).fill(null)
+    stepResults: new Array(wt.steps.length).fill(null),
+    stepResultIsHtml: new Array(wt.steps.length).fill(false)
   };
 
   document.getElementById('wt-picker').classList.add('wt-hidden');
@@ -917,7 +918,11 @@ function activateWtStep(index) {
   // Show previous result if step already run
   if (wtState.stepResults[index] !== null) {
     document.getElementById('resp-title').textContent = `Step ${index + 1}: ${step.label}`;
-    document.getElementById('resp-body').textContent = wtState.stepResults[index];
+    if (wtState.stepResultIsHtml[index]) {
+      document.getElementById('resp-body').innerHTML = wtState.stepResults[index];
+    } else {
+      document.getElementById('resp-body').textContent = wtState.stepResults[index];
+    }
   }
 }
 
@@ -934,7 +939,7 @@ function wtNextStep() {
 }
 
 async function runWtStep() {
-  if (!canRequest() && wtState.walkthrough.steps[wtState.currentStep].type === 'rpc') return;
+  if (wtState.walkthrough.steps[wtState.currentStep].type === 'rpc' && !canRequest('wt-countdown')) return;
 
   const step = wtState.walkthrough.steps[wtState.currentStep];
   const runBtn = document.getElementById('wt-run-btn');
@@ -959,11 +964,17 @@ async function runWtStep() {
       if (step.extract && result.ok) {
         const data = JSON.parse(result.text);
         for (const [varName, path] of Object.entries(step.extract)) {
-          wtState.extractedValues[varName] = extractPath(data, path);
+          if (path.startsWith('_input_')) {
+            // Extract from the user's input params, not the response
+            wtState.extractedValues[varName] = params[path.substring(7)];
+          } else {
+            wtState.extractedValues[varName] = extractPath(data, path);
+          }
         }
       }
 
       wtState.stepResults[wtState.currentStep] = lastResponseText;
+      wtState.stepResultIsHtml[wtState.currentStep] = false;
 
     } else if (step.type === 'utility') {
       let input;
@@ -1004,6 +1015,7 @@ async function runWtStep() {
       document.getElementById('resp-truncated').textContent = '';
 
       wtState.stepResults[wtState.currentStep] = resultText;
+      wtState.stepResultIsHtml[wtState.currentStep] = false;
 
     } else if (step.type === 'compute') {
       const resultText = runCompute(step.fn);
@@ -1015,6 +1027,7 @@ async function runWtStep() {
       document.getElementById('resp-truncated').textContent = '';
 
       wtState.stepResults[wtState.currentStep] = resultText;
+      wtState.stepResultIsHtml[wtState.currentStep] = true;
     }
 
     // Update stepper and nav
@@ -1027,7 +1040,22 @@ async function runWtStep() {
     }
 
   } catch(err) {
-    showError(err.message);
+    // Build CORS fallback with curl command for RPC steps
+    if (step.type === 'rpc') {
+      let params;
+      try { params = JSON.parse(document.getElementById('wt-params').value); } catch { params = {}; }
+      const base = networkSel.value;
+      const url = base + step.method;
+      lastCurlCmd = `curl -s -X POST ${url} -H "Content-Type: application/json" -d '${JSON.stringify(params)}'`;
+      document.getElementById('resp-body').innerHTML =
+        `<span style="color:var(--danger)">Direct API access unavailable. Use this curl command instead:</span>\n\n` +
+        `<code>${escHtml(lastCurlCmd)}</code>`;
+      document.getElementById('resp-status').textContent = 'Error';
+      document.getElementById('resp-status').className = 'resp-status err';
+      document.getElementById('resp-title').textContent = `Step ${wtState.currentStep + 1}: ${step.label}`;
+    } else {
+      showError(err.message);
+    }
   } finally {
     runBtn.disabled = false;
     runBtn.textContent = '▶ Run Step';
@@ -1124,10 +1152,11 @@ function runCompute(fn) {
   }
 
   if (fn === 'verify_match') {
-    const originalId = '0xea12f3b6c6dbe3dba7e7fccf6ed38c076ad52ee0f17d2f81704c5059a77e5d91';
+    const originalId = v.originalCoinId;
     const computedId = v.computedId;
 
     if (!computedId) return '<span style="color:var(--danger)">No computed ID — run Step 2 first.</span>';
+    if (!originalId) return '<span style="color:var(--danger)">No original coin ID — run Step 1 first.</span>';
 
     const match = computedId.toLowerCase() === originalId.toLowerCase();
 
