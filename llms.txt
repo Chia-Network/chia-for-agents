@@ -7,6 +7,7 @@
 - [chia-for-agents](https://github.com/Chia-Network/chia-for-agents): Documentation, recipes, examples, and quickstart code for AI agents building on Chia.
 - [chia-mcp](https://github.com/Chia-Network/chia-mcp): MCP server exposing 36 tools (up to 38 with push_tx and local-node options), 9 prompts, and 3 embedded guides for querying the Chia blockchain via Coinset hosted nodes. **Read-only by default** — `push_tx` (the only state-changing tool) is disabled unless you explicitly set `CHIA_MCP_ENABLE_PUSH_TX=1`. No API key needed.
 - [chia-blockchain AGENTS.md](https://github.com/Chia-Network/chia-blockchain/blob/main/AGENTS.md): Contributor guide for agents modifying the chia-blockchain codebase.
+- [Interactive Playground](https://chia-network.github.io/chia-for-agents/playground/): Browser-based RPC playground — execute Chia RPCs directly, no installation required.
 - [Full agent documentation](https://www.chia.net/llms-full.txt): Complete reference in a single file.
 
 ## Key Concepts

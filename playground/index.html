@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chia RPC Playground</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="header">
+  <h1><span>🌿</span> Chia RPC Playground</h1>
+  <div class="header-controls">
+    <div class="mode-toggle">
+      <div class="mode-btn active" onclick="setMode('explore')" id="mode-explore">Explore</div>
+      <div class="mode-btn" onclick="setMode('walkthroughs')" id="mode-walkthroughs">Walkthroughs</div>
+    </div>
+    <div class="network-sel">
+      <label>Network:</label>
+      <select id="network">
+        <option value="https://api.coinset.org/">Mainnet</option>
+        <option value="https://testnet11.api.coinset.org/">Testnet11</option>
+      </select>
+      <span id="network-badge" style="padding:2px 8px;border-radius:3px;font-size:.75rem;font-weight:700;background:var(--accent);color:#1a1a2e">MAINNET</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="left">
+    <!-- Explore mode (default) -->
+    <div id="explore-panel">
+      <div class="field">
+        <label>Method</label>
+        <select id="method"></select>
+        <div class="method-desc" id="method-desc"></div>
+      </div>
+      <div class="field">
+        <label>Parameters (JSON)</label>
+        <textarea id="params" spellcheck="false"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="run-btn" onclick="runRpc()">▶ Run</button>
+        <button class="btn btn-secondary" onclick="resetParams()">Reset</button>
+        <span class="countdown" id="countdown"></span>
+      </div>
+
+      <div class="utils-section">
+        <h3>─── Utilities ───</h3>
+        <div class="util-tabs">
+          <div class="util-tab active" onclick="showUtil('encode',this)">Encode</div>
+          <div class="util-tab" onclick="showUtil('decode',this)">Decode</div>
+          <div class="util-tab" onclick="showUtil('coinid',this)">Coin ID</div>
+        </div>
+        <div class="util-panel active" id="util-encode">
+          <div class="field"><label>Puzzle Hash (0x...)</label><input id="enc-ph" placeholder="0xad704c74..."></div>
+          <div class="field"><label>Prefix</label>
+            <select id="enc-prefix"><option value="xch">xch (mainnet)</option><option value="txch">txch (testnet)</option></select>
+          </div>
+          <button class="btn btn-primary btn-small" onclick="doEncode()">Encode Address</button>
+          <div class="util-result" id="enc-result"></div>
+        </div>
+        <div class="util-panel" id="util-decode">
+          <div class="field"><label>Bech32m Address</label><input id="dec-addr" placeholder="xch1..."></div>
+          <button class="btn btn-primary btn-small" onclick="doDecode()">Decode Address</button>
+          <div class="util-result" id="dec-result"></div>
+        </div>
+        <div class="util-panel" id="util-coinid">
+          <div class="field"><label>Parent Coin Info (0x...)</label><input id="cid-parent" placeholder="0x..."></div>
+          <div class="field"><label>Puzzle Hash (0x...)</label><input id="cid-ph" placeholder="0x..."></div>
+          <div class="field"><label>Amount (mojos)</label><input id="cid-amount" type="text" inputmode="numeric" placeholder="1000000000000"></div>
+          <button class="btn btn-primary btn-small" onclick="doCoinId()">Compute Coin ID</button>
+          <div class="util-result" id="cid-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Walkthrough mode -->
+    <div id="wt-panel" class="wt-hidden">
+      <div id="wt-picker" class="wt-picker"></div>
+      <div id="wt-active" class="wt-hidden">
+        <div class="btn-row" style="margin-bottom:12px">
+          <button class="btn btn-secondary btn-small" onclick="exitWalkthrough()">← Back to list</button>
+        </div>
+        <div id="wt-stepper" class="wt-stepper"></div>
+        <div id="wt-context" class="wt-context"></div>
+        <div class="field">
+          <label id="wt-step-title">Step</label>
+          <textarea id="wt-params" spellcheck="false" style="min-height:100px;line-height:1.4;background:var(--surface);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:4px;font-family:var(--mono);font-size:.9rem;resize:vertical"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="wt-run-btn" onclick="runWtStep()">▶ Run Step</button>
+          <span class="countdown" id="wt-countdown"></span>
+        </div>
+        <div class="wt-nav" id="wt-nav">
+          <button class="btn btn-secondary btn-small" id="wt-prev-btn" onclick="wtPrevStep()" disabled>← Previous</button>
+          <button class="btn btn-primary btn-small" id="wt-next-btn" onclick="wtNextStep()" disabled>Next Step →</button>
+        </div>
+        <div id="wt-summary"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="resp-header">
+      <h2 id="resp-title">Response</h2>
+      <div>
+        <span class="resp-status" id="resp-status"></span>
+      </div>
+    </div>
+    <div class="resp-body" id="resp-body">Select a method and click Run.</div>
+    <div class="resp-truncated" id="resp-truncated"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary btn-small" onclick="copyResponse()">📋 Copy</button>
+      <button class="btn btn-secondary btn-small" onclick="showCurl()">🔗 Show as curl</button>
+    </div>
+    <div class="curl-box" id="curl-box" style="display:none"></div>
+  </div>
+</div>
+
+<div class="footer">
+  ⚠️ Queries are sent directly from your browser to Coinset's public nodes (<a href="https://coinset.org" target="_blank">coinset.org</a>). No data passes through Chia Network servers. Avoid querying addresses you want to keep private.<br>
+  Powered by <a href="https://coinset.org" target="_blank">Coinset</a> · Docs: <a href="https://github.com/Chia-Network/chia-for-agents" target="_blank">chia-for-agents</a>
+</div>
+
+<script src="utils.js"></script>
+<script src="rpc-catalog.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

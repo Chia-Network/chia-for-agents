@@ -12,6 +12,7 @@ Tools for AI agents working with the Chia blockchain (XCH). Query coin records b
 | Diagnose an RPC or push_tx error | [REFERENCE.md#error-catalogue](REFERENCE.md#error-catalogue) |
 | See what's built on Chia | [ECOSYSTEM.md](ECOSYSTEM.md) |
 | Run working code (simulator or testnet) | [examples/quickstart.py](examples/quickstart.py) |
+| Try RPC calls in the browser | [Interactive Playground](playground/) |
 | **Sent XCH to the wrong address** | [AGENTS.md](AGENTS.md) — recipe: "I sent XCH to the wrong address" |
 | Something's broken / verify my environment | [examples/self_check.py](examples/self_check.py) |
 | Contribute to this repo | [AGENTS.md](AGENTS.md) |
